@@ -1,0 +1,12 @@
+noncensus 0.1
+-------------
+
+NEW FEATURES
+
+* First version of the `noncensus` package. Collection of various regional
+  information determined by the U.S. Census Bureau along with demographic data.
+
+DATA
+
+* `census_regions`: the census regions of each U.S. state as defined by the
+  U.S. Census Bureau

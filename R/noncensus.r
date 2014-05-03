@@ -1,5 +1,4 @@
-#' A collection of various regional information determined by the U.S. Census
-#' Bureau along with demographic data.
+#' U.S. Census Region and Demographic Data
 #'
 #' The R package \code{noncensus} provides a collection of various regional
 #' information determined by the U.S. Census Bureau along with demographic
@@ -10,7 +9,6 @@
 #' @name noncensus
 #' @aliases noncensus package-noncensus
 NULL
-
 
 #' Census Regions of U.S. States
 #' 
@@ -35,4 +33,4 @@ NULL
 #'  @name census_regions
 #'  @usage data(census_regions)
 #'  @format A data frame with 51 rows and 3 variables
-#' NULL
+NULL

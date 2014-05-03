@@ -3,8 +3,7 @@
 \alias{noncensus}
 \alias{noncensus-package}
 \alias{package-noncensus}
-\title{A collection of various regional information determined by the U.S. Census
-Bureau along with demographic data.}
+\title{U.S. Census Region and Demographic Data}
 \description{
 The R package \code{noncensus} provides a collection of
 various regional information determined by the U.S. Census

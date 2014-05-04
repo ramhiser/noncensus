@@ -122,19 +122,23 @@ states$population <- as.integer(merge(states,
                                       by.x="name",
                                       by.y="NAME")$CENSUS2010POP)
 
+# Reorder columns
+cols_states <- c('state', 'name', 'region', 'division', 'capital', 'area',
+                 'population')
+states <- states[cols_states]
+
 # Additional info from:
 # http://en.wikipedia.org/wiki/List_of_capitals_in_the_United_States#Insular_area_capitals
 states <- rbind(states,
-                c("AS", NA, NA, "American Samoa", "Pago Pago", 76.8, 55519),
-                c("GU", NA, NA, "Guam", "Hagåtña", 212, 159358),
-                c("MP", NA, NA, "Northern Mariana Islands", "Saipan", 179.01, 53833),
-                c("PR", NA, NA, "Puerto Rico", "San Juan", 3515, 3725789),
-                c("VI", NA, NA, "U.S. Virgin Islands", "Charlotte Amalie", 133.73, 106405))
+                c("AS", "American Samoa", NA, NA, "Pago Pago", 76.8, 55519),
+                c("GU", "Guam", NA, NA, "Hagåtña", 212, 159358),
+                c("MP", "Northern Mariana Islands", NA, NA, "Saipan", 179.01, 53833),
+                c("PR", "Puerto Rico", NA, NA, "San Juan", 3515, 3725789),
+                c("VI", "U.S. Virgin Islands", NA, NA, "Charlotte Amalie", 133.73, 106405))
 
 states$state <- factor(states$state)
 states$region <- factor(states$region)
 states$division <- factor(states$division)
 
 
-# TODO: Update data description
 save(states, file="../../data/states.RData")

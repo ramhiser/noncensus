@@ -1,15 +1,15 @@
 \docType{data}
-\name{census_regions}
-\alias{census_regions}
-\title{Census Regions of U.S. States}
+\name{states}
+\alias{states}
+\title{Demographic Data and Census Regions of U.S. States}
 \format{A data frame with 51 rows and 3 variables}
 \usage{
-data(census_regions)
+data(states)
 }
 \description{
-A dataset containing the census regions of each U.S. state
-as defined by the U.S. Census Bureau. The U.S. is divided
-into four regions:
+A dataset containing demographic information and the census
+regions of each U.S. state as defined by the U.S. Census
+Bureau. The U.S. is divided into four regions:
 }
 \details{
 \enumerate{ \item Midwest \item Northeast \item South \item

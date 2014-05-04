@@ -10,10 +10,11 @@
 #' @aliases noncensus package-noncensus
 NULL
 
-#' Census Regions of U.S. States
+#' Demographic Data and Census Regions of U.S. States
 #' 
-#' A dataset containing the census regions of each U.S. state as defined by the
-#' U.S. Census Bureau. The U.S. is divided into four regions:
+#' A dataset containing demographic information and the census regions of each
+#' U.S. state as defined by the U.S. Census Bureau. The U.S. is divided into
+#' four regions:
 #'
 #' \enumerate{
 #'   \item Midwest
@@ -30,8 +31,8 @@ NULL
 #' 
 #'  @docType data
 #'  @keywords datasets
-#'  @name census_regions
-#'  @usage data(census_regions)
+#'  @name states
+#'  @usage data(states)
 #'  @format A data frame with 51 rows and 3 variables
 NULL
 

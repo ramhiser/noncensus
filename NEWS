@@ -12,4 +12,10 @@ DATA
   U.S. Census Bureau. Also includes U.S. territories and demographic data.
 
 * `counties`: FIPS codes and demographic data for counties and county-equivalent
-  entities
+  entities.
+
+* `combined_areas`: Combined Statistical Areas (CSAs), which are groupings of
+  U.S. counties by the U.S. Census Bureau.
+
+* `corebased_areas`: Core-based Statistical Areas (CBSAs), which are groupings
+  of U.S. counties by the U.S. Census Bureau.

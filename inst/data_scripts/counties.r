@@ -33,9 +33,72 @@ census_data$county_fips <- sprintf("%03d", census_data$county_fips)
 # not included (e.g., Puerto Rico).
 counties <- left_join(county_fips, census_data)
 
+
+# Next, we add the U.S. Census-defined geographic areas to the counties
+# data.frame
+
+# Combined Statistical Areas (CSAs)
+csa <- read.csv("http://www.census.gov/popest/data/metro/totals/2013/files/CSA-EST2013-alldata.csv",
+                header=TRUE)
+combined_areas <- subset(csa,
+                         LSAD == "Combined Statistical Area",
+                         select=c(CSA, NAME))
+colnames(combined_areas) <- c("CSA", "name")
+rownames(combined_areas) <- NULL
+
+# Core-based Statistical Areas (CBSAs)
+cbsa <- read.csv("http://www.census.gov/popest/data/metro/totals/2013/files/CBSA-EST2013-alldata.csv",
+                 header=TRUE)
+
+# 1-to-many mapping of CBSA to CSA
+CSA_to_CBSA <- subset(csa, !is.na(CBSA), select=c(CSA,CBSA))
+CSA_to_CBSA <- CSA_to_CBSA[!duplicated(CSA_to_CBSA), ]
+
+# CBSAs are the union of Metropolitan and Micropolitan Statistical Areas (MSAs)
+metropolitan_areas <- subset(cbsa,
+                             LSAD == "Metropolitan Statistical Area",
+                             select=c(CBSA, NAME))
+micropolitan_areas <- subset(cbsa,
+                             LSAD == "Micropolitan Statistical Area",
+                             select=c(CBSA, NAME))
+
+# Combine metropolitan_areas and micropolitan_areas into single data.frame
+corebased_areas <- rbind(
+    data.frame(metropolitan_areas, type="Metropolitan"),
+    data.frame(micropolitan_areas, type="Micropolitan")
+)
+corebased_areas <- left_join(corebased_areas, CSA_to_CBSA)
+colnames(corebased_areas) <- c("CBSA", "name", "type", "CSA")
+corebased_areas <- corebased_areas[c("CBSA", "CSA",  "name", "type")]
+rownames(corebased_areas) <- NULL
+
+# The STCOU variable is a concatenation of the state and county FIPS codes
+# The 0 from single-digit state FIPS codes have been truncated.
+# We pad the FIPS codes before extracting both the state and county FIPS codes.
+stat_areas <- subset(cbsa,
+                     LSAD == "County or equivalent",
+                     select=c("CBSA", "STCOU"))
+stat_areas$STCOU <- sprintf("%05d", stat_areas$STCOU)
+stat_areas$state_fips <- substr(stat_areas$STCOU, start=1, stop=2)
+stat_areas$county_fips <- substr(stat_areas$STCOU, start=3, stop=5)
+stat_areas <- stat_areas[c("CBSA", "state_fips", "county_fips")]
+stat_areas <- left_join(stat_areas, CSA_to_CBSA)
+
+counties <- left_join(counties, stat_areas)
+
+
+# Post-processing of counties to ensure things are juuuust right
+counties <- counties[c("county_name", "state", "state_fips", "county_fips",
+                       "fips_class", "CSA", "CBSA", "population")]
 counties$state <- factor(counties$state)
 counties$state_fips <- factor(counties$state_fips)
 counties$county_fips <- factor(counties$county_fips)
 counties$fips_class <- factor(counties$fips_class)
+counties$CSA <- factor(counties$CSA)
+counties$CBSA <- factor(counties$CBSA)
 
 save(counties, file="../../data/counties.RData")
+
+# Saves the lookup tables of CSAs and CBSAs
+save(combined_areas, corebased_areas,
+     file="../../data/statistical_areas.RData")

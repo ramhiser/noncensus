@@ -68,4 +68,4 @@ accessible.
 - Possily work with spatial data frames to utilize existing packages.
   - Should be simple and easy to use
   - Minimal boilerplate code for data munging and massaging
-
+  - Existing work described in the [spatial CRAN Task View](http://cran.r-project.org/web/views/Spatial.html)

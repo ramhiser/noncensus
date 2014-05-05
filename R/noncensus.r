@@ -54,8 +54,9 @@ NULL
 #' 2010 FIPS Codes for Counties and County-Equivalent Entities
 #' 
 #' A dataset containing state and county FIPS codes for U.S. counties and
-#' county-equivalent entities (CEE). The CEE includes non-state locations, such
-#' as Puerto Rico (PR) and Guam (GU).
+#' county-equivalent entities (CEE) along with county-level demographic
+#' data. The CEE includes non-state locations, such as Puerto Rico (PR) and Guam
+#' (GU).
 #'
 #' \itemize{
 #'   \item state. State Postal Code
@@ -63,6 +64,7 @@ NULL
 #'   \item county_fips. County FIPS Code
 #'   \item county_name. County Name and Legal/Statistical Area Description
 #'   \item fips_class. FIPS Class Code
+#'   \item population. County population from 2010 Census
 #' }
 #'
 #' The following details about FIPS Class Codes have been blatantly taken from
@@ -81,7 +83,7 @@ NULL
 #' 
 #'  @docType data
 #'  @keywords datasets
-#'  @name county_fips
-#'  @usage data(county_fips)
-#'  @format A data frame with 3235 rows and 5 variables
+#'  @name counties
+#'  @usage data(counties)
+#'  @format A data frame with 3235 rows and 6 variables
 NULL

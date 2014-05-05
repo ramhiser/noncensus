@@ -11,4 +11,5 @@ DATA
 * `states`: the census regions of each U.S. state as defined by the
   U.S. Census Bureau. Also includes U.S. territories and demographic data.
 
-* `county_fips`: FIPS codes for counties and county-equivalent entities.
+* `counties`: FIPS codes and demographic data for counties and county-equivalent
+  entities

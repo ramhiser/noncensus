@@ -1,22 +1,23 @@
 \docType{data}
-\name{county_fips}
-\alias{county_fips}
+\name{counties}
+\alias{counties}
 \title{2010 FIPS Codes for Counties and County-Equivalent Entities}
-\format{A data frame with 3235 rows and 5 variables}
+\format{A data frame with 3235 rows and 6 variables}
 \usage{
-data(county_fips)
+data(counties)
 }
 \description{
 A dataset containing state and county FIPS codes for U.S.
-counties and county-equivalent entities (CEE). The CEE
-includes non-state locations, such as Puerto Rico (PR) and
-Guam (GU).
+counties and county-equivalent entities (CEE) along with
+county-level demographic data. The CEE includes non-state
+locations, such as Puerto Rico (PR) and Guam (GU).
 }
 \details{
 \itemize{ \item state. State Postal Code \item state_fips.
 State FIPS Code \item county_fips. County FIPS Code \item
 county_name. County Name and Legal/Statistical Area
-Description \item fips_class. FIPS Class Code }
+Description \item fips_class. FIPS Class Code \item
+population. County population from 2010 Census }
 
 The following details about FIPS Class Codes have been
 blatantly taken from the Census Bureau's website:

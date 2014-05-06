@@ -105,7 +105,7 @@ NULL
 #'
 #' This data set considers each zip code throughout the U.S. and provides
 #' additional information, including the city and state, latitude and longitude,
-#' and the FIPS code for its county.
+#' and the FIPS code for the corresponding county.
 #'
 #' The ZIP code data was obtained from version 1.0 of the \code{\link{zipcode}}
 #' package on CRAN. The county FIPS codes were obtained by querying the FIPS
@@ -123,7 +123,7 @@ NULL
 #' }
 #'
 #' The FIPS codes are useful for mapping ZIP codes and cities to counties in the
-#' \code{link[noncensus]{counties}} data set.
+#' \code{\link[noncensus]{counties}} data set.
 #'
 #' Fun fact: ZIP is an acronym for "Zone Improvement Plan."
 #' 

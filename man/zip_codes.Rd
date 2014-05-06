@@ -9,8 +9,8 @@ data(zip_codes)
 \description{
 This data set considers each zip code throughout the U.S.
 and provides additional information, including the city and
-state, latitude and longitude, and the FIPS code for its
-county.
+state, latitude and longitude, and the FIPS code for the
+corresponding county.
 }
 \details{
 The ZIP code data was obtained from version 1.0 of the
@@ -26,7 +26,7 @@ ZIP code's latitude \item longitude. ZIP code's longitude
 \item fips. County FIPS Code }
 
 The FIPS codes are useful for mapping ZIP codes and cities
-to counties in the \code{link[noncensus]{counties}} data
+to counties in the \code{\link[noncensus]{counties}} data
 set.
 
 Fun fact: ZIP is an acronym for "Zone Improvement Plan."

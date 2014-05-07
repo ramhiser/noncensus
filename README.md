@@ -39,6 +39,53 @@ subset(states, region == "West")
 51    WY    Wyoming   West Mountain       Cheyenne  97914     563626
 ```
 
+We also provide data for all U.S. counties, which are uniquely identified by
+[FIPS county codes](http://en.wikipedia.org/wiki/FIPS_county_code). The
+`counties` data set contains all of the U.S. counties and county equivalents
+along with [Combined Statistical Area
+(CSA)](http://en.wikipedia.org/wiki/Combined_Statistical_Area) and [Core-Based
+Statistical Area
+(CSBA)](http://en.wikipedia.org/wiki/Core_Based_Statistical_Area). 
+
+```
+data(counties)
+head(counties)
+     county_name state state_fips county_fips fips_class  CSA  CBSA population
+1 Autauga County    AL         01         001         H1 <NA> 33860      54571
+2 Baldwin County    AL         01         003         H1  380 19300     182265
+3 Barbour County    AL         01         005         H1 <NA>  <NA>      27457
+4    Bibb County    AL         01         007         H1  142 13820      22915
+5  Blount County    AL         01         009         H1  142 13820      57322
+6 Bullock County    AL         01         011         H1 <NA>  <NA>      10914
+```
+
+Details about the data stored in `counties` can be obtained via `?counties`,
+including details regarding CSA and CBSA. The following image [from
+Wikipedia](http://en.wikipedia.org/wiki/Combined_Statistical_Area#Map)
+summarizes the statistical areas well:
+
+![U.S. Statistical Areas](http://upload.wikimedia.org/wikipedia/commons/7/7b/Combined_statistical_areas_of_the_United_States_and_Puerto_Rico.gif)
+
+It is sometimes useful to map FIPS codes at the county level to the more
+granular zip codes. However, these data are seldom available and are tedious to
+come by. We provide such a mapping in `zip_codes`:
+
+```
+data(zip_codes)
+head(zip_codes, 10)
+     zip        city state latitude longitude  fips
+1  00210  Portsmouth    NH  43.0059  -71.0132 33015
+2  00211  Portsmouth    NH  43.0059  -71.0132 33015
+3  00212  Portsmouth    NH  43.0059  -71.0132 33015
+4  00213  Portsmouth    NH  43.0059  -71.0132 33015
+5  00214  Portsmouth    NH  43.0059  -71.0132 33015
+6  00215  Portsmouth    NH  43.0059  -71.0132 33015
+7  03040 East Candia    NH  43.0059  -71.0132 33015
+8  03041  East Derry    NH  43.0059  -71.0132 33015
+9  03073 North Salem    NH  43.0059  -71.0132 33015
+10 03802  Portsmouth    NH  43.0059  -71.0132 33015
+```
+
 ## Roadmap
 
 ### Version 0.2

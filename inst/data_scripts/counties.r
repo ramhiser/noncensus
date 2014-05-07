@@ -99,6 +99,23 @@ counties$CBSA <- factor(counties$CBSA)
 
 save(counties, file="../../data/counties.RData")
 
+# Updates the encoding where Unicode is in a city/county name
+# See: http://stackoverflow.com/a/19480595/234233
+Encoding(levels(combined_areas$name)) <- "latin1"
+levels(combined_areas$name) <- iconv(
+      levels(combined_areas$name),
+      "latin1",
+      "UTF-8"
+    )
+
+Encoding(levels(corebased_areas$name)) <- "latin1"
+levels(corebased_areas$name) <- iconv(
+      levels(corebased_areas$name),
+      "latin1",
+      "UTF-8"
+    )
+
+
 # Saves the lookup tables of CSAs and CBSAs
-save(combined_areas, corebased_areas,
-     file="../../data/statistical_areas.RData")
+save(combined_areas, file="../../data/combined_areas.RData")
+save(corebased_areas, file="../../data/corebased_areas.RData")

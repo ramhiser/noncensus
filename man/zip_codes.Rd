@@ -14,10 +14,10 @@ corresponding county.
 }
 \details{
 The ZIP code data was obtained from version 1.0 of the
-\code{\link{zipcode}} package on CRAN. The county FIPS
-codes were obtained by querying the FIPS code from each
-zip's latitude and longitude via the FCC's Census Block
-Conversions API. For details regarding the API, see
+\code{\link[zipcode]{zipcode}} package on CRAN. The county
+FIPS codes were obtained by querying the FIPS code from
+each zip's latitude and longitude via the FCC's Census
+Block Conversions API. For details regarding the API, see
 \url{http://www.fcc.gov/developers/census-block-conversions-api}.
 
 \itemize{ \item zip. U.S. ZIP (postal) code \item city. ZIP

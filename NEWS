@@ -15,10 +15,12 @@ DATA
   entities.
 
 * `combined_areas`: Combined Statistical Areas (CSAs), which are groupings of
-  U.S. counties by the U.S. Census Bureau.
+  U.S. counties by the U.S. Census Bureau. Load data with
+  data(statistical_areas).
 
 * `corebased_areas`: Core-based Statistical Areas (CBSAs), which are groupings
-  of U.S. counties by the U.S. Census Bureau.
+  of U.S. counties by the U.S. Census Bureau. Load data with
+  data(statistical_areas).
 
 * `zip_codes`: U.S. zip codes and related data. Including the city, state,
   latitude, and longitude. Also, includes county FIPS codes to map zip codes to

@@ -23,17 +23,19 @@ population from 2010 Census }
 
 The U.S. Census Bureau groups counties into CSAs and CBSAs
 primarily based on county population. We provide listings
-of both in \code{\link{combined_areas}} and
-\code{\link{corebased_areas}}, respectively. NOTE: Not all
-counties are members of a CSA or CBSA. For a detailed
-description, Wikipedia has excellent discussions of both
-areas:
+of both in \code{\link[noncensus]{combined_areas}} and
+\code{\link[noncensus]{corebased_areas}}.
+
+For a detailed description, Wikipedia has excellent
+discussions of both areas:
 \url{http://en.wikipedia.org/wiki/Combined_Statistical_Area}
 and
 \url{http://en.wikipedia.org/wiki/Core_Based_Statistical_Area}.
 Also, the following map from Wikipedia is excellent to
 visualize the areas:
 \url{http://upload.wikimedia.org/wikipedia/commons/7/7b/Combined_statistical_areas_of_the_United_States_and_Puerto_Rico.gif}
+
+NOTE: Not all counties are members of a CSA or CBSA.
 
 The following details about FIPS Class Codes have been
 blatantly taken from the Census Bureau's website:

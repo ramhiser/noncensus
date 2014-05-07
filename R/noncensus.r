@@ -71,13 +71,16 @@ NULL
 #'
 #' The U.S. Census Bureau groups counties into CSAs and CBSAs primarily based on
 #' county population. We provide listings of both in
-#' \code{\link{combined_areas}} and \code{\link{corebased_areas}}, respectively.
-#' NOTE: Not all counties are members of a CSA or CBSA. For a detailed
-#' description, Wikipedia has excellent discussions of both areas:
-#' \url{http://en.wikipedia.org/wiki/Combined_Statistical_Area} and
-#' \url{http://en.wikipedia.org/wiki/Core_Based_Statistical_Area}.
-#' Also, the following map from Wikipedia is excellent to visualize the areas:
+#' \code{\link[noncensus]{combined_areas}} and
+#' \code{\link[noncensus]{corebased_areas}}.
+#'
+#' For a detailed description, Wikipedia has excellent discussions of both
+#' areas: \url{http://en.wikipedia.org/wiki/Combined_Statistical_Area} and
+#' \url{http://en.wikipedia.org/wiki/Core_Based_Statistical_Area}.  Also, the
+#' following map from Wikipedia is excellent to visualize the areas:
 #' \url{http://upload.wikimedia.org/wikipedia/commons/7/7b/Combined_statistical_areas_of_the_United_States_and_Puerto_Rico.gif}
+#'
+#' NOTE: Not all counties are members of a CSA or CBSA.
 #'
 #' The following details about FIPS Class Codes have been blatantly taken from
 #' the Census Bureau's website:
@@ -107,7 +110,7 @@ NULL
 #' additional information, including the city and state, latitude and longitude,
 #' and the FIPS code for the corresponding county.
 #'
-#' The ZIP code data was obtained from version 1.0 of the \code{\link{zipcode}}
+#' The ZIP code data was obtained from version 1.0 of the \code{\link[zipcode]{zipcode}}
 #' package on CRAN. The county FIPS codes were obtained by querying the FIPS
 #' code from each zip's latitude and longitude via the FCC's Census Block
 #' Conversions API. For details regarding the API, see
@@ -132,4 +135,38 @@ NULL
 #' @name zip_codes
 #' @usage data(zip_codes)
 #' @format A data frame with 43524 rows and 6 variables
+NULL
+
+
+#' Combined Statistical Areas (CSAs)
+#'
+#' The U.S. Census Bureau groups counties into CSAs primarily based on county
+#' population. NOTE: Not all counties are members of a CSA. For a detailed
+#' description, Wikipedia has an excellent discussion:
+#' \url{http://en.wikipedia.org/wiki/Combined_Statistical_Area}.  Also, the
+#' following map from Wikipedia is excellent to visualize the areas:
+#' \url{http://upload.wikimedia.org/wikipedia/commons/7/7b/Combined_statistical_areas_of_the_United_States_and_Puerto_Rico.gif}
+#'
+#' @docType data
+#' @keywords datasets
+#' @name combined_areas
+#' @usage data(combined_areas)
+#' @format A data frame with 166 rows and 2 variables.
+NULL
+
+
+#' Core-based Statistical Area (CBSAs)
+#'
+#' The U.S. Census Bureau groups counties into CBSAs primarily based on county
+#' population. NOTE: Not all counties are members of a CBSA. For a detailed
+#' description, Wikipedia has an excellent discussion:
+#' \url{http://en.wikipedia.org/wiki/Core_Based_Statistical_Area}.  Also, the
+#' following map from Wikipedia is excellent to visualize the areas:
+#' \url{http://upload.wikimedia.org/wikipedia/commons/7/7b/Combined_statistical_areas_of_the_United_States_and_Puerto_Rico.gif}
+#'
+#' @docType data
+#' @keywords datasets
+#' @name corebased_areas
+#' @usage data(corebased_areas)
+#' @format A data frame with 917 rows and 4 variables.
 NULL

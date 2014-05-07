@@ -8,5 +8,20 @@ NEW FEATURES
 
 DATA
 
-* `census_regions`: the census regions of each U.S. state as defined by the
-  U.S. Census Bureau
+* `states`: the census regions of each U.S. state as defined by the
+  U.S. Census Bureau. Also includes U.S. territories and demographic data.
+
+* `counties`: FIPS codes and demographic data for counties and county-equivalent
+  entities.
+
+* `combined_areas`: Combined Statistical Areas (CSAs), which are groupings of
+  U.S. counties by the U.S. Census Bureau. Load data with
+  data(statistical_areas).
+
+* `corebased_areas`: Core-based Statistical Areas (CBSAs), which are groupings
+  of U.S. counties by the U.S. Census Bureau. Load data with
+  data(statistical_areas).
+
+* `zip_codes`: U.S. zip codes and related data. Including the city, state,
+  latitude, and longitude. Also, includes county FIPS codes to map zip codes to
+  FIPS codes.

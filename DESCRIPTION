@@ -6,6 +6,8 @@ Author: John A. Ramey <johnramey@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
 Description: A collection of various regional information determined by the
     U.S. Census Bureau along with demographic data.
+Depends:
+    R (>= 2.14)
 License: MIT + file LICENSE
 URL: https://github.com/ramey/noncensus,
     http://ramhiser.com

@@ -72,4 +72,4 @@ zip_codes$state <- factor(zip_codes$state)
 
 rownames(zip_codes) <- NULL
 
-save(zip_codes, file="../../data/zip_codes.RData")
+save(zip_codes, file="../../data/zip_codes.RData", compress='xz')

@@ -97,7 +97,7 @@ counties$fips_class <- factor(counties$fips_class)
 counties$CSA <- factor(counties$CSA)
 counties$CBSA <- factor(counties$CBSA)
 
-save(counties, file="../../data/counties.RData")
+save(counties, file="../../data/counties.RData", compress='xz')
 
 # Updates the encoding where Unicode is in a city/county name
 # See: http://stackoverflow.com/a/19480595/234233
@@ -117,5 +117,5 @@ levels(corebased_areas$name) <- iconv(
 
 
 # Saves the lookup tables of CSAs and CBSAs
-save(combined_areas, file="../../data/combined_areas.RData")
-save(corebased_areas, file="../../data/corebased_areas.RData")
+save(combined_areas, file="../../data/combined_areas.RData", compress='xz')
+save(corebased_areas, file="../../data/corebased_areas.RData", compress='xz')

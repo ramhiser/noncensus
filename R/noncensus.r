@@ -189,3 +189,72 @@ NULL
 #' @usage data(population_age)
 #' @format A data frame with 56574 rows and 4 variables
 NULL
+
+
+
+#' Income, Poverty, and Health Insurance in the United States
+#' 
+#' A dataset containing the U.S. Census QuickFacts table of frequently requested 
+#' data items from various Census Bureau programs.
+#' 
+#' \itemize{
+#'   \item fips.  FIPS State and County code	
+#'   \item population_2013.	Population, 2013 estimate
+#'   \item population_2010_base.	Population, 2010 (April 1) estimates base
+#'   \item population_change_percent.	Population, percent change from April 1, 2010 to July 1, 2013
+#'   \item population_2010.	Population, 2010
+#'   \item percent_under_5.	Percentage of persons under 5 years
+#'   \item percent_under_18. Percentge of	persons under 18 years
+#'   \item percent_over_65.	Percentage of persons 65 years and over
+#'   \item percent_female.	Percentage of Female persons
+#'   \item percent_white.	Percentage of persons identifying as White alone
+#'   \item percent_black.	Percentage of persons identifying as Black or African American alone
+#'   \item percent_native.	Percentage of persons identifying as American Indian and Alaska Native alone
+#'   \item percent_asian.	Percentage of persons identifying as Asian alone
+#'   \item percent_hawaiian.	Percentage of persons identifying as Native Hawaiian and Other Pacific Islander alone
+#'   \item percent_two_plus.	Percentage of persons identifying as Two or More Races
+#'   \item percent_hispanic.	Percentage of persons identifying as Hispanic or Latino
+#'   \item percent_white_NH.	Percentage of persons identifying as White alone, not Hispanic or Latino
+#'   \item percent_same_house_1yr.	Percentage of persons living in the same house 1 year & over
+#'   \item percent_foreign.	Percentage of foreign born persons
+#'   \item percent_nonEnglish.	Percentage of persons age 5+ who speak a language other than English at home
+#'   \item percent_high_school_grad.	Percentage of persons age 25+ with a high school degree or higher
+#'   \item percent_BA.	Percentage of persons age 25+ with a Bachelor's degree or higher
+#'   \item veterans.	Number of veterans
+#'   \item mean_travel_time.	Mean travel time to work in minutes, workers age 16+
+#'   \item housing_units.	Number of housing units
+#'   \item homeownership.	Homeownership rate
+#'   \item percent_multi_unit.	Percentage of housing units in multi-unit structures
+#'   \item median_value_housing.	Median value of owner-occupied housing units
+#'   \item households. Number of households
+#'   \item pph.	Persons per household
+#'   \item per_capita_income.	Per capita money income in past 12 months
+#'   \item med_hh_income.	Median household income
+#'   \item percent_poverty.	Percentage of persons below poverty level
+#'   \item private_non_farm.	Number of private nonfarm establishments
+#'   \item private_non_farm_employ.	Private nonfarm employment
+#'   \item pnfe_percent_change.	Percent change in private nonfarm employment
+#'   \item nonemployer_estab.	Number of nonemployer establishments
+#'   \item firms.	Total number of firms
+#'   \item percent_black_firms.	Percentage of Black-owned firms
+#'   \item percent_native_firms.	Percentage of American Indian- and Alaska Native-owned firms
+#'   \item percent_asian_firms.	Percentage of Asian-owned firms
+#'   \item percent_hawaiian_firms.	Percentage of Native Hawaiian- and Other Pacific Islander-owned firms
+#'   \item percent_hispanic_firms.	Percentage of Hispanic-owned firms
+#'   \item percent_female_firms.	Percentage of Woman-owned firms
+#'   \item manu_shipments.	Manufacturers shipments, in thousands of dollars
+#'   \item merchant_wholesales.	Merchant wholesaler sales, in thousands of dollars
+#'   \item retail_sales.	Retail sales, in thousands of dollars
+#'   \item retail_sales_per_capita.	Retail sales per capita
+#'   \item accom_food_sales.	Accommodation and food services sales, in thousands of dollars
+#'   \item building_permits.	Number of building permits
+#'   \item land_area.	Land area in square miles
+#'   \item population_sq_mi.	Population per square mile
+#' }
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name quick_facts
+#' @usage data(quick_facts)
+#' @format A data frame with 3195 rows and 52 variables
+NULL

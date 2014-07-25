@@ -7,8 +7,7 @@ county_data <- readRDS("data/data.rds")
 extra_data <- readRDS("data/extras.rds")
 fillColors <- extra_data$colors
 leg_txt <- extra_data$legend
-cat_name <- extra_data$old[1]
-fill_name <- extra_data$old[2]
+fill_name <- extra_data$old
 tile <- extra_data$bg_tile
 if (is.na(tile)) tile <- NULL
 attr <- extra_data$bg_attr

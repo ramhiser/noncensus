@@ -1,8 +1,48 @@
-shiny_choro <- function(df, categories, fill, palette = "Blues", cuts = NULL, 
-                        background = c("Base", "Greyscale", "Physical", "None"), dir = NULL){
+#' Start a Shiny Application for Choropleths
+#'
+#' This function takes a dataframe and generates a local Shiny application for 
+#' visualizing the results in a choropleth. The Shiny, dplyr, and leaflet 
+#' libraries must be installed.
+#'
+#' @importFrom RColorBrewer brewer.pal
+#' @export
+#' @param df The dataframe with at least three columns: One for "fips" (the FIPS 
+#' code of the counties to show), one for the data to show, and one for 
+#' grouping variable
+#' @param fill The name of the variable to show in the choropleth. Must be 
+#' continuous.
+#' @param categories The name of the (optional) grouping variable on which to 
+#' divide the data
+#' @param palette An RColorBrewer palette to use. Default is "Blues"
+#' @param background One of "Base", "Greyscale", "Physical", or "None", to have
+#' as the background tiles for the map
+#' @param cuts An optional vector specifying where to make the color breaks. 
+#' Default is every 20%.
+#' @param dir The directory in which to create the Shiny app. Defaults to tmpdir()
+#' 
+#' @example
+#' data(population_age)
+#' shiny_choro(population_age, "age_group", "population", palette = "Purples", 
+#' background = "Grey")
+#' 
+#' 
+shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",  
+                        background = c("Base", "Greyscale", "Physical", "None"), 
+                        cuts = NULL, dir = NULL){
  
   if (!require(shiny)) {
-    stop("You must have 'shiny' installed to run the Shiny application -- try 'install.packages(\"shiny\")'.",
+    stop("You must have 'shiny' installed to run the Shiny application 
+         -- try 'install.packages(\"shiny\")'.",
+         call. = F)
+  }
+  if (!require(dplyr)) {
+    stop("You must have 'dplyr' installed to run the Shiny application 
+         -- try 'install.packages(\"dplyr\")'.",
+         call. = F)
+  }
+  if (!require(leaflet)) {
+    stop("You must have 'leaflet' installed to run the Shiny application 
+-- try 'install_github(\"jcheng5/leaflet-shiny\")'.",
          call. = F)
   }
   
@@ -12,17 +52,25 @@ shiny_choro <- function(df, categories, fill, palette = "Blues", cuts = NULL,
   }
   dir <- path.expand(dir)
   
-  categories <- as.character(categories)
+  if(!is.null(categories)) categories <- as.character(categories)
   fill <- as.character(fill)
   
   if(!("fips" %in% names(df))) stop("df must contain 'fips' column")
-  if(!(categories %in% names(df))) stop("df does not contain categories column")
+  if(!is.null(categories)){
+    if(!(categories %in% names(df))) stop("df does not contain categories column")
+  }
   if(!(fill %in% names(df))) stop("df does not contain fill column")
   
-  df <- df[,c("fips", categories, fill)]
-  old_names <- c(categories, fill)
-  names(df)[2:3] <- c("cat", "fill")
-  df$cat <- factor(df$cat)
+  if(is.null(categories)){
+    df <- df[,c("fips", fill)]
+    old_names <- fill
+    names(df)[2] <- "fill"
+  } else {
+    df <- df[,c("fips", categories, fill)]
+    old_names <- c(categories, fill)
+    names(df)[2:3] <- c("cat", "fill")
+    df$cat <- factor(df$cat)
+  }
   
   
   background <- match.arg(background)
@@ -37,14 +85,19 @@ shiny_choro <- function(df, categories, fill, palette = "Blues", cuts = NULL,
   
   dir.create(dir, showWarnings = F, recursive = T)
 
+  if(is.null(categories)){
   file.copy(file.path(system.file(package = "noncensus"), "shiny/."), 
             file.path(dir), recursive = T)
+  } else {
+    file.copy(file.path(system.file(package = "noncensus"), "shiny_cat/."), 
+              file.path(dir), recursive = T)
+  }
   
   if(is.null(cuts)) cuts <- unique(quantile(df$fill, seq(0, 1, 1/5)))
 
   
-  fillColors <- unlist(RColorBrewer::brewer.pal(length(cuts) - 1, palette))
-  df <- mutate(df, fillKey = cut(df$fill, cuts, ordered_result = T, dig.lab = 6))
+  fillColors <- unlist(brewer.pal(length(cuts) - 1, palette))
+  df <- mutate(df, fillKey = cut_nice(df$fill, cuts, ordered_result = T))
   df$colorBuckets <- as.numeric(df$fillKey)
   leg_txt <- levels(df$fillKey)
   df$color <- fillColors[df$colorBuckets]
@@ -63,4 +116,60 @@ shiny_choro <- function(df, categories, fill, palette = "Blues", cuts = NULL,
           "been copied to '", dir, "'.")
   
   runApp(file.path(dir))
+}
+
+
+cut_nice <- function (x, breaks, labels = NULL, include.lowest = FALSE, right = TRUE, 
+          dig.lab = 3L, ordered_result = FALSE, ...) 
+{
+  if (!is.numeric(x)) 
+    stop("'x' must be numeric")
+  if (length(breaks) == 1L) {
+    if (is.na(breaks) || breaks < 2L) 
+      stop("invalid number of intervals")
+    nb <- as.integer(breaks + 1)
+    dx <- diff(rx <- range(x, na.rm = TRUE))
+    if (dx == 0) {
+      dx <- abs(rx[1L])
+      breaks <- seq.int(rx[1L] - dx/1000, rx[2L] + dx/1000, 
+                        length.out = nb)
+    }
+    else {
+      breaks <- seq.int(rx[1L], rx[2L], length.out = nb)
+      breaks[c(1L, nb)] <- c(rx[1L] - dx/1000, rx[2L] + 
+                               dx/1000)
+    }
+  }
+  else nb <- length(breaks <- sort.int(as.double(breaks)))
+  if (anyDuplicated(breaks)) 
+    stop("'breaks' are not unique")
+  codes.only <- FALSE
+  if (is.null(labels)) {
+    for (dig in dig.lab:max(12L, dig.lab)) {
+      ch.br <- formatC(breaks, digits = dig, width = 1L, format = 'fg')
+      if (ok <- all(ch.br[-1L] != ch.br[-nb])) 
+        break
+    }
+    labels <- if (ok) 
+      paste0(if (right) 
+        "("
+        else "[", ch.br[-nb], ",", ch.br[-1L], if (right) 
+          "]"
+        else ")")
+    else paste("Range", seq_len(nb - 1L), sep = "_")
+    if (ok && include.lowest) {
+      if (right) 
+        substr(labels[1L], 1L, 1L) <- "["
+      else substring(labels[nb - 1L], nchar(labels[nb - 
+                                                     1L], "c")) <- "]"
+    }
+  }
+  else if (is.logical(labels) && !labels) 
+    codes.only <- TRUE
+  else if (length(labels) != nb - 1L) 
+    stop("lengths of 'breaks' and 'labels' differ")
+  code <- .bincode(x, breaks, right, include.lowest)
+  if (codes.only) 
+    code
+  else factor(code, seq_along(labels), labels, ordered = ordered_result)
 }

@@ -170,3 +170,22 @@ NULL
 #' @usage data(corebased_areas)
 #' @format A data frame with 917 rows and 4 variables.
 NULL
+
+#' County Population Data by Age
+#' 
+#' A dataset containing the population totals and percentages for each US county
+#' by age of inhabitant. The variables are as follows:
+#' 
+#' \itemize{
+#'   \item fips. FIPS code for the county  
+#'   \item age_group. Age groups are in 5 year intervals 
+#'   \item population. Count of people in that county in that age group
+#'   \item percent. Percent of that county's total population in that age group
+#' }
+#' 
+#' @docType data
+#' @keywords datasets
+#' @name population_age
+#' @usage data(population_age)
+#' @format A data frame with 56574 rows and 4 variables
+NULL

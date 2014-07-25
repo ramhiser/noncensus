@@ -17,17 +17,9 @@ shinyUI(fluidPage(
                  )
       ),
       
-      absolutePanel(id = "controls", class = "modal", fixed = TRUE, draggable = TRUE,
-                    top = 60, left = "auto", right = 20, bottom = "auto",
-                    width = 330, height = 100,
-                    
-                    h4("Category select"),
-                    selectInput("category", cat_name, levels(county_data$cat))
-      ), 
-      
       
       absolutePanel(id = "legend", class = "modal", fixed = TRUE, draggable = TRUE,
-                    top = 200, left = "auto", right = 20, bottom = "auto",
+                    top = 60, left = "auto", right = 20, bottom = "auto",
                     width = 200, height = "auto",
                     
                     tags$div(class = "input-color", uiOutput("Legend"))

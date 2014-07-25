@@ -32,22 +32,16 @@ shinyServer(function(input, output, session) {
   # after the map is created
   session$onFlushed(once=TRUE, function() {
     
-    companyToUse <- reactive({
-      filter(comp_two,
-             cat == input$category | is.na(cat))
-    })
-    
     
     paintObs <- observe({
-      
-      comp_data <- companyToUse()
+    
       
       map$clearShapes()
-      fips_colors <- unique(comp_data[!is.na(comp_data$color),c("fips", "color", "group")])
-      fips_colors <- merge(data.frame("group" = 1:max(comp_data$group, na.rm = T)), 
+      fips_colors <- unique(comp_two[!is.na(comp_two$color),c("fips", "color", "group")])
+      fips_colors <- merge(data.frame("group" = 1:max(comp_two$group, na.rm = T)), 
                            fips_colors, by = "group", all.x = T)
       
-      map$addPolygon(comp_data$lat, comp_data$long, 
+      map$addPolygon(comp_two$lat, comp_two$long, 
                      fips_colors$group,
                      lapply(fips_colors$color, function(x) {
                        list(fillColor = x)
@@ -67,15 +61,14 @@ shinyServer(function(input, output, session) {
       map$clearPopups()
       
       isolate({
-        cdata <- companyToUse()
-        county <- cdata[cdata$group == event$id,]
+        county <- comp_two[comp_two$group == event$id,]
         center <- county %>% 
-          group_by("fips", "names", "county", "fill", "cat") %>% filter(!is.na(lat)) %>% 
+          group_by("fips", "names", "county", "fill") %>% filter(!is.na(lat)) %>% 
           summarize(clong = mean(long), clat = mean(lat)) 
         content <- as.character(tagList(
           tags$strong(center$county),
           tags$br(),
-          paste(fill_name, ": ", center$fill)
+          paste(fill_name, ": ", formatC(center$fill, format = 'fg'))
         ))
         map$showPopup(center$clat, center$clong, content, event$id)
       })

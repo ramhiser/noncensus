@@ -17,11 +17,11 @@
 #' @param background One of "Base", "Greyscale", "Physical", or "None", to have
 #' as the background tiles for the map
 #' @param cuts An optional vector specifying where to make the color breaks. 
-#' Default is every 20%.
+#' Default cuts are the 20th, 40th, 60th, and 80th percentiles.
 #' @param dir The directory in which to create the Shiny app. Defaults to
 #' \code{\link[base]{tempdir}}.
 #' 
-#' @example
+#' @examples
 #' data(population_age)
 #' shiny_choro(population_age, fill = "age_group", categories = "population",
 #'             palette = "Purples", background = "Grey")

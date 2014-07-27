@@ -1,13 +1,14 @@
 Package: noncensus
 Title: U.S. Census Regional and Demographic Data
 Version: 0.1
-Date: 2014-05-03
-Author: John A. Ramey <johnramey@gmail.com>
+Date: 2014-07-27
+Author: John A. Ramey <johnramey@gmail.com>,
+    Kayla Schaefer <kschaefer.tx@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>
 Description: A collection of various regional information determined by the
     U.S. Census Bureau along with demographic data.
 Depends:
-    R (>= 2.14)
+    R (>= 3.0.2)
 License: MIT + file LICENSE
 URL: https://github.com/ramey/noncensus,
     http://ramhiser.com

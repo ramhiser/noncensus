@@ -18,31 +18,31 @@
 #' as the background tiles for the map
 #' @param cuts An optional vector specifying where to make the color breaks. 
 #' Default is every 20%.
-#' @param dir The directory in which to create the Shiny app. Defaults to tmpdir()
+#' @param dir The directory in which to create the Shiny app. Defaults to
+#' \code{\link[base]{tempdir}}.
 #' 
 #' @example
 #' data(population_age)
-#' shiny_choro(population_age, "age_group", "population", palette = "Purples", 
-#' background = "Grey")
-#' 
+#' shiny_choro(population_age, fill = "age_group", categories = "population",
+#'             palette = "Purples", background = "Grey")
 #' 
 shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",  
                         background = c("Base", "Greyscale", "Physical", "None"), 
-                        cuts = NULL, dir = NULL){
+                        cuts = NULL, dir = NULL) {
  
   if (!require(shiny)) {
     stop("You must have 'shiny' installed to run the Shiny application 
-         -- try 'install.packages(\"shiny\")'.",
+         -- try: install.packages('shiny').",
          call. = F)
   }
   if (!require(dplyr)) {
     stop("You must have 'dplyr' installed to run the Shiny application 
-         -- try 'install.packages(\"dplyr\")'.",
+         -- try: install.packages('dplyr').",
          call. = F)
   }
   if (!require(leaflet)) {
     stop("You must have 'leaflet' installed to run the Shiny application 
--- try 'install_github(\"jcheng5/leaflet-shiny\")'.",
+-- try: install_github('jcheng5/leaflet-shiny').",
          call. = F)
   }
   
@@ -52,26 +52,30 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   }
   dir <- path.expand(dir)
   
-  if(!is.null(categories)) categories <- as.character(categories)
-  fill <- as.character(fill)
-  
-  if(!("fips" %in% names(df))) stop("df must contain 'fips' column")
-  if(!is.null(categories)){
-    if(!(categories %in% names(df))) stop("df does not contain categories column")
+  if (!("fips" %in% names(df))) {
+    stop("df must contain 'fips' column")
   }
-  if(!(fill %in% names(df))) stop("df does not contain fill column")
-  
-  if(is.null(categories)){
-    df <- df[,c("fips", fill)]
+
+  fill <- as.character(fill)
+  if (!(fill %in% names(df))) {
+    stop("df does not contain fill column")
+  }
+
+  if (is.null(categories)) {
+    df <- df[, c("fips", fill)]
     old_names <- fill
     names(df)[2] <- "fill"
   } else {
-    df <- df[,c("fips", categories, fill)]
+    categories <- as.character(categories)
+    if (!(categories %in% names(df))) {
+      stop("df does not contain categories column")
+    }
+
+    df <- df[, c("fips", categories, fill)]
     old_names <- c(categories, fill)
     names(df)[2:3] <- c("cat", "fill")
     df$cat <- factor(df$cat)
   }
-  
   
   background <- match.arg(background)
   tiles <- c("Base" = "http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png",
@@ -85,7 +89,9 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   
   dir.create(dir, showWarnings = F, recursive = T)
 
-  if(is.null(categories)){
+  # TODO: Do we really need 2 shiny apps? Can we use 1 instead and add some
+  # logic that conditionally uses categories or not?
+  if (is.null(categories)) {
   file.copy(file.path(system.file(package = "noncensus"), "shiny/."), 
             file.path(dir), recursive = T)
   } else {
@@ -93,8 +99,9 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
               file.path(dir), recursive = T)
   }
   
-  if(is.null(cuts)) cuts <- unique(quantile(df$fill, seq(0, 1, 1/5)))
-
+  if (is.null(cuts)) {
+    cuts <- unique(quantile(df$fill, seq(0, 1, 1/5)))
+  }
   
   fillColors <- unlist(brewer.pal(length(cuts) - 1, palette))
   df <- mutate(df, fillKey = cut_nice(df$fill, cuts, ordered_result = T))
@@ -102,15 +109,13 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   leg_txt <- levels(df$fillKey)
   df$color <- fillColors[df$colorBuckets]
   
-  
-  # dir.create(file.path(dir, "df"), showWarnings = F)
+  # TODO: Could add cat/legend labels or loquesea here later too
+  extras <- list("bg_tile" = tile, "bg_attr" = attribute, "colors" = fillColors,
+                 "legend" = leg_txt, "old" = old_names)
+
+  # Copies data to temp files to be laoded by Shiny app
   saveRDS(df, file = file.path(dir, "data", "data.rds"))
-  
-  # could add cat/legend labels or loquesea here later too
-  extras <- list("bg_tile" = tile, "bg_attr" = attribute, "colors" = fillColors, "legend" = leg_txt, 
-                 "old" = old_names)
   saveRDS(extras, file = file.path(dir, "data", "extras.rds"))
-  
   
   message("The files necessary for launching the Shiny application have ",
           "been copied to '", dir, "'.")
@@ -118,15 +123,16 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   runApp(file.path(dir))
 }
 
-
-cut_nice <- function (x, breaks, labels = NULL, include.lowest = FALSE, right = TRUE, 
-          dig.lab = 3L, ordered_result = FALSE, ...) 
-{
-  if (!is.numeric(x)) 
+# Helper function base on base:::cut.default()
+cut_nice <- function (x, breaks, labels = NULL, include.lowest = FALSE,
+                      right = TRUE, dig.lab = 3L, ordered_result = FALSE, ...) {
+  if (!is.numeric(x)) {
     stop("'x' must be numeric")
+  }
   if (length(breaks) == 1L) {
-    if (is.na(breaks) || breaks < 2L) 
+    if (is.na(breaks) || breaks < 2L) {
       stop("invalid number of intervals")
+    }
     nb <- as.integer(breaks + 1)
     dx <- diff(rx <- range(x, na.rm = TRUE))
     if (dx == 0) {
@@ -140,15 +146,19 @@ cut_nice <- function (x, breaks, labels = NULL, include.lowest = FALSE, right = 
                                dx/1000)
     }
   }
-  else nb <- length(breaks <- sort.int(as.double(breaks)))
-  if (anyDuplicated(breaks)) 
+  else {
+    nb <- length(breaks <- sort.int(as.double(breaks)))
+  }
+  if (anyDuplicated(breaks)) {
     stop("'breaks' are not unique")
+  }
   codes.only <- FALSE
   if (is.null(labels)) {
     for (dig in dig.lab:max(12L, dig.lab)) {
       ch.br <- formatC(breaks, digits = dig, width = 1L, format = 'fg')
-      if (ok <- all(ch.br[-1L] != ch.br[-nb])) 
+      if (ok <- all(ch.br[-1L] != ch.br[-nb])) {
         break
+      }
     }
     labels <- if (ok) 
       paste0(if (right) 

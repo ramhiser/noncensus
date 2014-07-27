@@ -4,8 +4,8 @@
 #' visualizing the results in a choropleth. The Shiny, dplyr, and leaflet 
 #' libraries must be installed.
 #'
-#' @importFrom RColorBrewer brewer.pal
 #' @export
+#' @importFrom RColorBrewer brewer.pal
 #' @param df The dataframe with at least three columns: One for "fips" (the FIPS 
 #' code of the counties to show), one for the data to show, and one for 
 #' grouping variable

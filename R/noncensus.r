@@ -258,3 +258,35 @@ NULL
 #' @usage data(quick_facts)
 #' @format A data frame with 3195 rows and 52 variables
 NULL
+
+
+#' Polygons to Describe Each U.S. County's Geographical Shape
+#'
+#' Data containing the vertices to describe each U.S. county's geographical
+#' shape as a polygon. Vertices are given in terms of latitude and
+#' longitude. The order in which the vertices should be drawn are also given by
+#' \code{order}.
+#'
+#' NOTE: A small number of counties have multiple groups. Typically, these
+#' counties are separated into multiple polygons by, say, a body of water.
+#' Example: Galveston, Texas (FIPS == 48167).
+#'
+#' U.S. counties are uniquely identified by a FIPS code.
+#'
+#' The \code{fips_polygons} data frame consists of the following variables:
+#' \itemize{
+#'   \item order. The order in which the vertices should be drawn.
+#'   \item fips. County FIPS Code
+#'   \item names. Unique name to describe county.
+#'   \item group. County polygon's group number.
+#'   \item lat. County's latitude
+#'   \item long. County's longitude
+#'   \item county. The county's name.
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name fips_polygons
+#' @usage data(fips_polygons)
+#' @format A data frame with 91,030 rows and 7 variables
+NULL

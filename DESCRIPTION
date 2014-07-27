@@ -9,5 +9,5 @@ Description: A collection of various regional information determined by the
 Depends:
     R (>= 2.14)
 License: MIT + file LICENSE
-URL: https://github.com/ramey/noncensus,
+URL: https://github.com/ramhiser/noncensus,
     http://ramhiser.com

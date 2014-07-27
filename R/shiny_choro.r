@@ -22,7 +22,7 @@
 #' \code{\link[base]{tempdir}}.
 #' 
 #' @examples
-#' data(population_age)
+#' data(population_age, package="noncensus")
 #' shiny_choro(population_age, fill = "age_group", categories = "population",
 #'             palette = "Purples", background = "Grey")
 #' 

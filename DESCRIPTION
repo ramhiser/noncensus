@@ -13,7 +13,11 @@ Imports:
     dplyr (>= 0.2),
     RColorBrewer
 Suggests:
-    shiny
+    ggplot2,
+    maps,
+    reshape2,
+    shiny,
+    stringr
 License: MIT + file LICENSE
 URL: https://github.com/ramey/noncensus,
     http://ramhiser.com

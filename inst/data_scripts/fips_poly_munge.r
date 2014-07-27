@@ -4,7 +4,8 @@ library(reshape2)
 library(stringr)
 library(ggplot2)
 
-fips_key <- tbl_df(read.csv("data/fips_codes.csv", stringsAsFactors = F))
+# Assumes getwd() == './inst/data_scripts/'
+fips_key <- tbl_df(read.csv("../raw_data/fips_codes.csv", stringsAsFactors = F))
 fips_key$state <- tolower(fips_key$state)
 fips_key$county_cap <- fips_key$county
 fips_key$county <- tolower(fips_key$county)
@@ -47,4 +48,6 @@ counties_df$subregion <- NULL
 counties_df <- counties_df[ ,c("order", "fips", "names", "group", "lat", "long", "county")]
 counties_df <- counties_df[1:91030,] # removes unnamed rows
 
-write.csv(counties_df, "fips_polygons.csv")
+fips_polygons <- counties_df
+
+save(fips_polygons, file="../../data/fips_polygons.RData", compress='xz')

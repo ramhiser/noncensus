@@ -190,8 +190,6 @@ NULL
 #' @format A data frame with 56574 rows and 4 variables
 NULL
 
-
-
 #' Income, Poverty, and Health Insurance in the United States
 #' 
 #' A dataset containing the U.S. Census QuickFacts table of frequently requested 
@@ -273,7 +271,7 @@ NULL
 #'
 #' U.S. counties are uniquely identified by a FIPS code.
 #'
-#' The \code{fips_polygons} data frame consists of the following variables:
+#' The \code{county_polygons} data frame consists of the following variables:
 #' \itemize{
 #'   \item order. The order in which the vertices should be drawn.
 #'   \item fips. County FIPS Code
@@ -286,7 +284,7 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @name fips_polygons
-#' @usage data(fips_polygons)
+#' @name county_polygons
+#' @usage data(county_polygons)
 #' @format A data frame with 91,030 rows and 7 variables
 NULL

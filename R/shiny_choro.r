@@ -5,7 +5,6 @@
 #' libraries must be installed.
 #'
 #' @importFrom RColorBrewer brewer.pal
-#' @export
 #' @param df The dataframe with at least three columns: One for "fips" (the FIPS 
 #' code of the counties to show), one for the data to show, and one for 
 #' grouping variable
@@ -19,10 +18,11 @@
 #' @param cuts An optional vector specifying where to make the color breaks. 
 #' Default is every 20%.
 #' @param dir The directory in which to create the Shiny app. Defaults to tmpdir()
+#' @export
 #' 
 #' @example
 #' data(population_age)
-#' shiny_choro(population_age, "age_group", "population", palette = "Purples", 
+#' shiny_choro(population_age, "population", "age_group", palette = "Purples", 
 #' background = "Grey")
 #' 
 #' 

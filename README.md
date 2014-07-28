@@ -10,7 +10,7 @@ console:
 
 ```
 library(devtools)
-install_github('noncensus', 'ramhiser')
+install_github('ramhiser/noncensus')
 ```
 
 ## Usage

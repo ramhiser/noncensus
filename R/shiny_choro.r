@@ -23,7 +23,7 @@
 #' 
 #' @examples
 #' data(population_age, package="noncensus")
-#' shiny_choro(population_age, fill = "age_group", categories = "population",
+#' shiny_choro(population_age, fill = "population", categories = "age_group",
 #'             palette = "Purples", background = "Grey")
 #' 
 shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",  
@@ -100,7 +100,11 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   }
   
   if (is.null(cuts)) {
-    cuts <- unique(quantile(df$fill, seq(0, 1, 1/5)))
+    if (is.numeric(df$fill)) {
+      cuts <- unique(quantile(df$fill, seq(0, 1, 1/5)))
+    } else {
+      cuts <- levels(factor(df$fill))
+    }
   }
   
   fillColors <- unlist(brewer.pal(length(cuts) - 1, palette))
@@ -114,8 +118,8 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
                  "legend" = leg_txt, "old" = old_names)
 
   # Copies data to temp files to be laoded by Shiny app
-  saveRDS(df, file = file.path(dir, "data", "data.rds"))
-  saveRDS(extras, file = file.path(dir, "data", "extras.rds"))
+  saveRDS(df, file = file.path(dir, "data.rds"))
+  saveRDS(extras, file = file.path(dir, "extras.rds"))
   
   message("The files necessary for launching the Shiny application have ",
           "been copied to '", dir, "'.")

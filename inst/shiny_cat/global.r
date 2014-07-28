@@ -5,8 +5,8 @@ library(dplyr)
 
 data(county_polygons)
 
-county_data <- readRDS("data/data.rds")
-extra_data <- readRDS("data/extras.rds")
+county_data <- readRDS("data.rds")
+extra_data <- readRDS("extras.rds")
 fillColors <- extra_data$colors
 leg_txt <- extra_data$legend
 cat_name <- extra_data$old[1]

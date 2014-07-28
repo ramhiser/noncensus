@@ -36,7 +36,7 @@ libraries must be installed.
 }
 \examples{
 data(population_age, package="noncensus")
-shiny_choro(population_age, fill = "age_group", categories = "population",
+shiny_choro(population_age, fill = "population", categories = "age_group",
             palette = "Purples", background = "Grey")
 }
 

@@ -5,11 +5,15 @@ library(dplyr)
 
 data(county_polygons)
 
-county_data <- readRDS("data.rds")
-extra_data <- readRDS("extras.rds")
+county_data <- readRDS("data/data.rds")
+extra_data <- readRDS("data/extras.rds")
 fillColors <- extra_data$colors
 leg_txt <- extra_data$legend
-fill_name <- extra_data$old
+fill_name <- extra_data$old[1]
+if(length(extra_data) > 1){
+  cat_name <- extra_data$old[2]
+  county_cats <- levels(factor(county_data$cat))
+}
 tile <- extra_data$bg_tile
 if (is.na(tile)) tile <- NULL
 attr <- extra_data$bg_attr

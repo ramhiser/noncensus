@@ -14,6 +14,18 @@ bindEvent <- function(eventExpr, callback, env=parent.frame(), quoted=FALSE) {
 
 shinyServer(function(input, output, session) {
   
+  output$cats <- renderUI({
+    if (is.null(county_data$cat)) {
+      return()
+    }
+    return(absolutePanel(id = "controls", class = "modal", fixed = TRUE, draggable = TRUE,
+                              top = 60, left = "auto", right = 20, bottom = "auto",
+                              width = 330, height = 100, h4("Category select"),
+    selectInput(inputId="cats",
+                label="Categories",
+                choices=county_cats)))
+  })
+  
   map <- createLeafletMap(session, "map")
   
   output$Legend <- renderUI({
@@ -32,16 +44,27 @@ shinyServer(function(input, output, session) {
   # after the map is created
   session$onFlushed(once=TRUE, function() {
     
+    companyToUse <- reactive({
+      if (is.null(input$cats)){
+        comp_two
+      } else {
+      filter(comp_two,
+             cat == input$cats | is.na(cat))
+      
+      }
+    })
+    
     
     paintObs <- observe({
-    
+      
+      comp_data <- companyToUse()
       
       map$clearShapes()
-      fips_colors <- unique(comp_two[!is.na(comp_two$color),c("fips", "color", "group")])
-      fips_colors <- merge(data.frame("group" = 1:max(comp_two$group, na.rm = T)), 
+      fips_colors <- unique(comp_data[!is.na(comp_data$color),c("fips", "color", "group")])
+      fips_colors <- merge(data.frame("group" = 1:max(comp_data$group, na.rm = T)), 
                            fips_colors, by = "group", all.x = T)
       
-      map$addPolygon(comp_two$lat, comp_two$long, 
+      map$addPolygon(comp_data$lat, comp_data$long, 
                      fips_colors$group,
                      lapply(fips_colors$color, function(x) {
                        list(fillColor = x)
@@ -61,7 +84,8 @@ shinyServer(function(input, output, session) {
       map$clearPopups()
       
       isolate({
-        county <- comp_two[comp_two$group == event$id,]
+        cdata <- companyToUse()
+        county <- cdata[cdata$group == event$id,]
         center <- county %>% 
           group_by("fips", "names", "county", "fill") %>% filter(!is.na(lat)) %>% 
           summarize(clong = mean(long), clat = mean(lat)) 

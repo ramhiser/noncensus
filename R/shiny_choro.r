@@ -72,7 +72,7 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
     }
 
     df <- df[, c("fips", categories, fill)]
-    old_names <- c(categories, fill)
+    old_names <- c(fill, categories)
     names(df)[2:3] <- c("cat", "fill")
     df$cat <- factor(df$cat)
   }
@@ -89,15 +89,8 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   
   dir.create(dir, showWarnings = F, recursive = T)
 
-  # TODO: Do we really need 2 shiny apps? Can we use 1 instead and add some
-  # logic that conditionally uses categories or not?
-  if (is.null(categories)) {
   file.copy(file.path(system.file(package = "noncensus"), "shiny/."), 
             file.path(dir), recursive = T)
-  } else {
-    file.copy(file.path(system.file(package = "noncensus"), "shiny_cat/."), 
-              file.path(dir), recursive = T)
-  }
   
   if (is.null(cuts)) {
     if (is.numeric(df$fill)) {
@@ -118,8 +111,8 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
                  "legend" = leg_txt, "old" = old_names)
 
   # Copies data to temp files to be laoded by Shiny app
-  saveRDS(df, file = file.path(dir, "data.rds"))
-  saveRDS(extras, file = file.path(dir, "extras.rds"))
+  saveRDS(df, file = file.path(dir, "data/data.rds"))
+  saveRDS(extras, file = file.path(dir, "data/extras.rds"))
   
   message("The files necessary for launching the Shiny application have ",
           "been copied to '", dir, "'.")
@@ -127,7 +120,7 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   runApp(file.path(dir))
 }
 
-# Helper function base on base:::cut.default()
+# Helper function based on base:::cut.default()
 cut_nice <- function (x, breaks, labels = NULL, include.lowest = FALSE,
                       right = TRUE, dig.lab = 3L, ordered_result = FALSE, ...) {
   if (!is.numeric(x)) {

@@ -17,9 +17,10 @@ shinyUI(fluidPage(
                  )
       ),
       
+      uiOutput("cats"), 
       
       absolutePanel(id = "legend", class = "modal", fixed = TRUE, draggable = TRUE,
-                    top = 60, left = "auto", right = 20, bottom = "auto",
+                    top = 200, left = "auto", right = 20, bottom = "auto",
                     width = 200, height = "auto",
                     
                     tags$div(class = "input-color", uiOutput("Legend"))

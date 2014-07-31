@@ -2,9 +2,8 @@ shinyUI(fluidPage(
   div(class="outer",
       
       tags$head(
-        includeCSS("styles2.css")
-        #         ,
-        #         includeScript("gomap.js")
+        includeCSS("styles2.css"),
+        includeScript("gomap.js")
       ),
       
       leafletMap("map", width="100%", height = map_height,
@@ -18,20 +17,5 @@ shinyUI(fluidPage(
                  )
       ),
       uiOutput("Panel")
-#       conditionalPanel("!(input.cats === null)", 
-#                        fluidRow(
-#                          column(3, uiOutput("controls")),
-#                          column(6, uiOutput("ttab")),
-#                          
-#                          column(3, br(), tags$div(class="input-color", uiOutput("Legend"))))
-#       ),
-#       conditionalPanel("input.cats === null",  
-#                        absolutePanel(id = "legend", class = "modal", fixed = TRUE, draggable = TRUE,
-#                                      top = 200, left = "auto", right = 20, bottom = "auto",
-#                                      width = 200, height = "auto",
-#                                      
-#                                      tags$div(class = "input-color", uiOutput("Legend"))
-#                        )
-#       )
                        
       )))

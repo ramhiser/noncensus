@@ -13,22 +13,24 @@ body {
 
 #map {
   position: absolute;
-  top: 0;
+  top: 500;
   left: 0;
   right: 0;
-  bottom: 500;
+  bottom: 0;
 }
 
-#ttab table {
+/* #ttab table {
   width: 100%;
 }
+*/ 
 #ttab td+td {
   width: 80px;
 }
 
-.container-fluid {
+/* .container-fluid {
   padding-top: 500px;
 }
+*/
 
 /* If not using map tiles, show a white background */
 .leaflet-container {

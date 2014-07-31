@@ -1,0 +1,68 @@
+/* Customize fonts */
+body, label, input, button, select { 
+  font-family: 'Helvetica Neue', Helvetica;
+  font-weight: 200;
+}
+h1, h2, h3, h4 { font-weight: 400; }
+
+body {
+  overflow-y: scroll;
+  padding-bottom: 20px;
+}
+
+
+#map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 500;
+}
+
+#ttab table {
+  width: 100%;
+}
+#ttab td+td {
+  width: 80px;
+}
+
+.container-fluid {
+  padding-top: 500px;
+}
+
+/* If not using map tiles, show a white background */
+.leaflet-container {
+  background-color: white !important;
+}
+
+
+.input-color {
+    position: relative;
+}
+.input-color p {
+    display: inline-block;
+}
+.input-color .color-box {
+    padding-left: 10px;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    background-color: #ccc;
+    position: relative;
+}
+
+#legend {
+  /* Appearance */
+  background-color: white;
+  padding: 20px 20px 20px 20px;
+  cursor: move;
+  /* Fade out while not hovering */
+  opacity: 0.75;
+  zoom: 0.9;
+  transition: opacity 500ms 1s;
+}
+#legend:hover {
+  /* Fade in while hovering */
+  opacity: 0.95;
+  transition-delay: 0;
+}

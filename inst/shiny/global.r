@@ -10,7 +10,7 @@ extra_data <- readRDS("data/extras.rds")
 fillColors <- extra_data$colors
 leg_txt <- extra_data$legend
 fill_name <- extra_data$old[1]
-if(length(extra_data) > 1){
+if(length(extra_data$old) > 1){
   cat_name <- extra_data$old[2]
   county_cats <- levels(factor(county_data$cat))
 }
@@ -21,3 +21,5 @@ if (is.na(attr)) attr <- NULL
 
 comp_two <- merge(county_polygons, county_data, by = "fips", all.x = T)
 comp_two <- comp_two %>% arrange(group, order)
+
+map_height <- ifelse(is.null(county_data$cat), "100%", 500)

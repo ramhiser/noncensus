@@ -13,18 +13,40 @@ bindEvent <- function(eventExpr, callback, env=parent.frame(), quoted=FALSE) {
 
 
 shinyServer(function(input, output, session) {
-  
-  output$cats <- renderUI({
-    if (is.null(county_data$cat)) {
-      return()
+    
+  output$controls <- renderUI({
+    if(is.null(county_data$cat)){
+      return(NULL)
     }
-    return(absolutePanel(id = "controls", class = "modal", fixed = TRUE, draggable = TRUE,
-                              top = 60, left = "auto", right = 20, bottom = "auto",
-                              width = 330, height = 100, h4("Category select"),
+    return(list(
+    h4("Category select"),
     selectInput(inputId="cats",
-                label="Categories",
+                label="Category to show",
+                choices=county_cats),
+    selectInput(inputId="cats_compare",
+                label="Category to compare",
                 choices=county_cats)))
   })
+    
+  ttable <- reactive({
+    if(is.null(county_data$cat)){
+      return(NULL)
+    }
+    test_cat1 <- filter(county_data, cat == input$cats)$fill
+    test_cat2 <- filter(county_data, cat == input$cats_compare)$fill
+    ttest <- t.test(test_cat1, test_cat2)
+    data.frame("Mean 1" = ttest$estimate[1], 
+               "Mean 2" = ttest$estimate[2], 
+               "t_value" = ttest$statistic, 
+               "df" = ttest$parameter, 
+               "p_value" = ttest$p.value)})
+    
+    
+  output$ttab <- renderUI({
+    if(is.null(county_data$cat)){
+      return(NULL)
+    }
+    return(list(h4("t Test Results"), renderTable(ttable(), include.rownames = F)))})
   
   map <- createLeafletMap(session, "map")
   
@@ -39,6 +61,21 @@ shinyServer(function(input, output, session) {
     return(LL)
   })
   
+  output$Panel <- renderUI({
+    if(is.null(county_data$cat)){
+      return(absolutePanel(id = "legend", class = "modal", fixed = TRUE, draggable = TRUE,
+                           top = 20, left = "auto", right = 20, bottom = "auto",
+                           width = 200, height = "auto",
+                           
+                           tags$div(class = "input-color", uiOutput("Legend"))
+      ))
+    }
+    return(fluidRow(
+      column(3, uiOutput("controls")),
+      column(6, uiOutput("ttab")),
+      
+      column(3, br(), tags$div(class="input-color", uiOutput("Legend")))))
+  })
   
   # session$onFlushed is necessary to delay the drawing of the polygons until
   # after the map is created

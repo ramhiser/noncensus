@@ -109,7 +109,6 @@ shinyServer(function(input, output, session) {
         cdata <- companyToUse()
         county <- cdata[cdata$group == event$id,]
         if(grain == "County"){
-          print(head(county))
         center <- county %>% 
           group_by("fips", "names", "county", "fill") %>% filter(!is.na(lat)) %>% 
           summarize(clong = mean(long), clat = mean(lat)) 

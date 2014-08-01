@@ -108,11 +108,22 @@ shinyServer(function(input, output, session) {
       isolate({
         cdata <- companyToUse()
         county <- cdata[cdata$group == event$id,]
+        if(grain == "County"){
+          print(head(county))
         center <- county %>% 
           group_by("fips", "names", "county", "fill") %>% filter(!is.na(lat)) %>% 
           summarize(clong = mean(long), clat = mean(lat)) 
+        names(center)[3] <- "grain"
+        
+        }else if(grain == "State"){
+          center <- county %>% 
+            group_by("fips", "state", "fill") %>% filter(!is.na(lat)) %>% 
+            summarize(clong = mean(long), clat = mean(lat)) 
+          names(center)[2] <- "grain"
+        }
+        #TODO: World polygons
         content <- as.character(tagList(
-          tags$strong(center$county),
+          tags$strong(center$grain),
           tags$br(),
           paste(fill_name, ": ", formatC(center$fill, format = 'fg'))
         ))

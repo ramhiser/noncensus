@@ -13,6 +13,8 @@
 #' continuous.
 #' @param categories The name of the (optional) grouping variable on which to 
 #' divide the data
+#' @param map The level at which to draw the map. Options are "County", "State", 
+#' "World".
 #' @param palette An RColorBrewer palette to use. Default is "Blues"
 #' @param background One of "Base", "Greyscale", "Physical", or "None", to have
 #' as the background tiles for the map
@@ -24,9 +26,11 @@
 #' @examples
 #' data(population_age, package="noncensus")
 #' shiny_choro(population_age, fill = "population", categories = "age_group",
-#'             palette = "Purples", background = "Grey")
+#'             map = "County", palette = "Purples", background = "Grey")
 #' 
-shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",  
+shiny_choro <- function(df, fill, categories = NULL, 
+                        map = c("County", "State", "World"),
+                        palette = "Blues",  
                         background = c("Base", "Greyscale", "Physical", "None"), 
                         cuts = NULL, dir = NULL) {
  
@@ -77,6 +81,10 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
     df$cat <- factor(df$cat)
   }
   
+  if (length(map) > 1) map <- map[1]
+  map <- match.arg(map)
+  if (map == "world") stop("World polygons not yet implemented")
+  if (length(background) > 1) bacakground <- background[1]
   background <- match.arg(background)
   tiles <- c("Base" = "http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png",
               "Greyscale" = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
@@ -108,7 +116,7 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   
   # TODO: Could add cat/legend labels or loquesea here later too
   extras <- list("bg_tile" = tile, "bg_attr" = attribute, "colors" = fillColors,
-                 "legend" = leg_txt, "old" = old_names)
+                 "legend" = leg_txt, "old" = old_names, "map" = map)
 
   # Copies data to temp files to be laoded by Shiny app
   saveRDS(df, file = file.path(dir, "data/data.rds"))

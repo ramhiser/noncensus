@@ -13,7 +13,7 @@ leg_txt <- extra_data$legend
 fill_name <- extra_data$old[1]
 if(length(extra_data$old) > 1){
   cat_name <- extra_data$old[2]
-  county_cats <- levels(factor(county_data$cat))
+  county_cats <- levels(factor(county_data$categories))
 }
 tile <- extra_data$bg_tile
 if (is.na(tile)) tile <- NULL
@@ -35,4 +35,3 @@ comp_two <- comp_two %>% arrange(group, order)
   comp_two <- comp_two %>% arrange(group, order)
 }
 
-map_height <- ifelse(is.null(county_data$cat), "100%", 500)

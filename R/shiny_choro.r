@@ -77,8 +77,8 @@ shiny_choro <- function(df, fill, categories = NULL,
 
     df <- df[, c("fips", categories, fill)]
     old_names <- c(fill, categories)
-    names(df)[2:3] <- c("cat", "fill")
-    df$cat <- factor(df$cat)
+    names(df)[2:3] <- c("categories", "fill")
+    df$categories <- factor(df$categories)
   }
   
   if (length(map) > 1) map <- map[1]

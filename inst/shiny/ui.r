@@ -2,11 +2,11 @@ shinyUI(fluidPage(
   div(class="outer",
       
       tags$head(
-        includeCSS("styles2.css"),
+        includeCSS("styles.css"),
         includeScript("gomap.js")
       ),
       
-      leafletMap("map", width="100%", height = map_height,
+      leafletMap("map", width="100%", height = "100%",
                  initialTileLayer = tile,
                  initialTileLayerAttribution = attr, 
                  
@@ -16,6 +16,11 @@ shinyUI(fluidPage(
                    maxBounds = list(list(15.961329,-129.92981), list(52.908902,-56.80481)) # Show US only
                  )
       ),
-      uiOutput("Panel")
+      uiOutput("cats"), 
+      absolutePanel(id = "legend", class = "modal", fixed = TRUE, 
+                    draggable = TRUE, top = 500, left = "auto", right = 20, 
+                    bottom = "auto", width = 200, height = "auto",
+                    
+                    tags$div(class = "input-color", uiOutput("Legend"))
                        
-      )))
+      ))))

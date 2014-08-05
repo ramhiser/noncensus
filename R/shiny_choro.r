@@ -25,7 +25,7 @@
 #' @examples
 #' data(population_age, package="noncensus")
 #' shiny_choro(population_age, fill = "population", categories = "age_group",
-#'             map = "County", palette = "Purples", background = "Grey")
+#'             map = "county", palette = "Purples", background = "Grey")
 #' 
 shiny_choro <- function(df, fill, categories = NULL, 
                         map = c("County", "State", "World"),

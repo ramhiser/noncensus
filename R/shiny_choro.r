@@ -6,27 +6,30 @@
 #'
 #' @export
 #' @importFrom RColorBrewer brewer.pal
-#' @param df The dataframe with at least three columns: One for "fips" (the FIPS 
-#' code of the counties to show), one for the data to show, and one for 
-#' grouping variable
-#' @param fill The name of the variable to show in the choropleth. Must be 
-#' continuous.
+#' @param df The dataframe with column "fips" (the FIPS 
+#' code of the counties or states to show), with a column for the data to show, 
+#' and a column for the grouping variable (if specifing categories)
+#' @param fill The name of the variable to show in the choropleth
 #' @param categories The name of the (optional) grouping variable on which to 
 #' divide the data
+#' @param map The level at which to draw the map. Options are "county", "state", 
+#' "world"
 #' @param palette An RColorBrewer palette to use. Default is "Blues"
 #' @param background One of "Base", "Greyscale", "Physical", or "None", to have
 #' as the background tiles for the map
 #' @param cuts An optional vector specifying where to make the color breaks. 
-#' Default cuts are the 20th, 40th, 60th, and 80th percentiles.
+#' Default cuts are the 20th, 40th, 60th, and 80th percentiles
 #' @param dir The directory in which to create the Shiny app. Defaults to
-#' \code{\link[base]{tempdir}}.
+#' \code{\link[base]{tempdir}}
 #' 
 #' @examples
-#' data(population_age, package="noncensus")
+#' data(population_age, package = "noncensus")
 #' shiny_choro(population_age, fill = "population", categories = "age_group",
-#'             palette = "Purples", background = "Grey")
+#'             map = "county", palette = "Purples", background = "Grey")
 #' 
-shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",  
+shiny_choro <- function(df, fill, categories = NULL, 
+                        map = c("county", "state", "world"),
+                        palette = "Blues",  
                         background = c("Base", "Greyscale", "Physical", "None"), 
                         cuts = NULL, dir = NULL) {
  
@@ -73,10 +76,14 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
 
     df <- df[, c("fips", categories, fill)]
     old_names <- c(fill, categories)
-    names(df)[2:3] <- c("cat", "fill")
-    df$cat <- factor(df$cat)
+    names(df)[2:3] <- c("categories", "fill")
+    df$categories <- factor(df$categories)
   }
   
+  if (length(map) > 1) map <- map[1]
+  map <- match.arg(map)
+  if (map == "world") stop("World polygons not yet implemented")
+  if (length(background) > 1) bacakground <- background[1]
   background <- match.arg(background)
   tiles <- c("Base" = "http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png",
               "Greyscale" = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
@@ -108,9 +115,9 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   
   # TODO: Could add cat/legend labels or loquesea here later too
   extras <- list("bg_tile" = tile, "bg_attr" = attribute, "colors" = fillColors,
-                 "legend" = leg_txt, "old" = old_names)
+                 "legend" = leg_txt, "old" = old_names, "map" = map)
 
-  # Copies data to temp files to be laoded by Shiny app
+  # Copies data to temp files to be loaded by Shiny app
   saveRDS(df, file = file.path(dir, "data/data.rds"))
   saveRDS(extras, file = file.path(dir, "data/extras.rds"))
   
@@ -119,6 +126,68 @@ shiny_choro <- function(df, fill, categories = NULL, palette = "Blues",
   
   runApp(file.path(dir))
 }
+
+
+
+#' Plot a Choropleth
+#'
+#' This function takes a dataframe and generates a choropleth plot
+#'
+#' @export
+#' @importFrom RColorBrewer brewer.pal
+#' @param df The dataframe with column "fips" (the FIPS 
+#' code of the counties or states to show), with a column for the data to show
+#' @param fill The name of the variable to show in the choropleth
+#' @param map The level at which to draw the map. Options are "county", "state" 
+#' @param palette An RColorBrewer palette to use. Default is "Blues"
+#' @param cuts An optional vector specifying where to make the color breaks 
+#' Default cuts are the 20th, 40th, 60th, and 80th percentiles
+#' 
+#' @examples
+#' data(population_age, package = "noncensus")
+#' df <- plyr::ddply(population_age, "fips", summarize, population = sum(population))
+#' plot_choro(df, fill = "population", map = "county", palette = "Purples")
+#' 
+plot_choro <- function(df, fill, map = c("county", "state"), palette = "Blues", 
+                       cuts = NULL){
+  if (!("fips" %in% names(df))) {
+    stop("df must contain 'fips' column")
+  }
+  
+  if (length(map) > 1) map <- map[1]
+  map <- match.arg(map)
+  
+  if(map == "county"){
+    data(county_polygons)
+    df_poly <- merge(county_polygons, df, by = "fips", all.x = T)
+  }else {
+    data(state_polygons)
+    df_poly <- merge(state_polygons, df, by = "fips", all.x = T)
+  }
+  df_poly <- arrange(df_poly, order)
+  
+  if (is.null(cuts)) {
+    if (is.numeric(df_poly[,fill])) {
+      cuts <- unique(quantile(df_poly[,fill], seq(0, 1, 1/5), na.rm = T))
+    } else {
+      cuts <- levels(factor(df_poly[,fill]))
+    }
+  }
+  
+  fillColors <- unlist(brewer.pal(length(cuts) - 1, palette))
+  df_poly <- mutate(df_poly, fillKey = cut_nice(df_poly[,fill], cuts, ordered_result = T))
+  df_poly$colorBuckets <- as.numeric(df_poly$fillKey)
+  leg_txt <- levels(df_poly$fillKey)
+  df_poly$color <- fillColors[df_poly$colorBuckets]
+  
+  fips_colors <- unique(df_poly[!is.na(df_poly$color),c("fips", "color", "group")])
+  fips_colors <- merge(data.frame("group" = 1:max(df_poly$group, na.rm = T)), 
+                       fips_colors, by = "group", all.x = T)
+  
+  plot(c(-125,-68), c(25,50), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
+  polygon(county_polygons[,c("long", "lat")], col = fips_colors$color)
+}
+
 
 # Helper function based on base:::cut.default()
 cut_nice <- function (x, breaks, labels = NULL, include.lowest = FALSE,
@@ -167,8 +236,7 @@ cut_nice <- function (x, breaks, labels = NULL, include.lowest = FALSE,
     if (ok && include.lowest) {
       if (right) 
         substr(labels[1L], 1L, 1L) <- "["
-      else substring(labels[nb - 1L], nchar(labels[nb - 
-                                                     1L], "c")) <- "]"
+      else substring(labels[nb - 1L], nchar(labels[nb - 1L], "c")) <- "]"
     }
   }
   else if (is.logical(labels) && !labels) 

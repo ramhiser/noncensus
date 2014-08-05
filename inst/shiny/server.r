@@ -13,18 +13,7 @@ bindEvent <- function(eventExpr, callback, env=parent.frame(), quoted=FALSE) {
 
 
 shinyServer(function(input, output, session) {
-  
-  output$cats <- renderUI({
-    if (is.null(county_data$cat)) {
-      return()
-    }
-    return(absolutePanel(id = "controls", class = "modal", fixed = TRUE, draggable = TRUE,
-                              top = 60, left = "auto", right = 20, bottom = "auto",
-                              width = 330, height = 100, h4("Category select"),
-    selectInput(inputId="cats",
-                label="Categories",
-                choices=county_cats)))
-  })
+
   
   map <- createLeafletMap(session, "map")
   
@@ -39,18 +28,32 @@ shinyServer(function(input, output, session) {
     return(LL)
   })
   
+  output$cats <- renderUI({
+    if(is.null(comp_two$categories)){
+      return(NULL)
+    }
+    
+    return(absolutePanel(id = "controls", class = "modal", fixed = TRUE, 
+                         draggable = TRUE, top = 20, left = "auto", right = 20, 
+                         bottom = "auto", width = 200, height = "auto",
+                         h4("Category select"),
+           selectInput(inputId="cats",
+                       label="Category to show",
+                       choices=county_cats)))
+  })
+  
   
   # session$onFlushed is necessary to delay the drawing of the polygons until
   # after the map is created
   session$onFlushed(once=TRUE, function() {
     
     companyToUse <- reactive({
-      if (is.null(input$cats)){
+      if (is.null(comp_two$categories)){
         comp_two
       } else {
-      filter(comp_two,
-             cat == input$cats | is.na(cat))
-      
+        filter(comp_two,
+               categories == input$cats | is.na(categories))
+        
       }
     })
     
@@ -86,11 +89,21 @@ shinyServer(function(input, output, session) {
       isolate({
         cdata <- companyToUse()
         county <- cdata[cdata$group == event$id,]
-        center <- county %>% 
-          group_by("fips", "names", "county", "fill") %>% filter(!is.na(lat)) %>% 
-          summarize(clong = mean(long), clat = mean(lat)) 
+        if(grain == "County"){
+          center <- county %>% 
+            group_by("fips", "names", "county", "fill") %>% filter(!is.na(lat)) %>% 
+            summarize(clong = mean(long), clat = mean(lat)) 
+          names(center)[3] <- "grain"
+          
+        }else if(grain == "State"){
+          center <- county %>% 
+            group_by("fips", "state", "fill") %>% filter(!is.na(lat)) %>% 
+            summarize(clong = mean(long), clat = mean(lat)) 
+          names(center)[2] <- "grain"
+        }
+        #TODO: World polygons
         content <- as.character(tagList(
-          tags$strong(center$county),
+          tags$strong(center$grain),
           tags$br(),
           paste(fill_name, ": ", formatC(center$fill, format = 'fg'))
         ))

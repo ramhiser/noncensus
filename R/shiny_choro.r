@@ -7,28 +7,28 @@
 #' @export
 #' @importFrom RColorBrewer brewer.pal
 #' @param df The dataframe with column "fips" (the FIPS 
-#' code of the counties to show), with a column for the data to show, and a column
-#' for the grouping variable (if specifing categories)
-#' @param fill The name of the variable to show in the choropleth. 
+#' code of the counties or states to show), with a column for the data to show, 
+#' and a column for the grouping variable (if specifing categories)
+#' @param fill The name of the variable to show in the choropleth
 #' @param categories The name of the (optional) grouping variable on which to 
 #' divide the data
 #' @param map The level at which to draw the map. Options are "county", "state", 
-#' "world".
+#' "world"
 #' @param palette An RColorBrewer palette to use. Default is "Blues"
 #' @param background One of "Base", "Greyscale", "Physical", or "None", to have
 #' as the background tiles for the map
 #' @param cuts An optional vector specifying where to make the color breaks. 
-#' Default cuts are the 20th, 40th, 60th, and 80th percentiles.
+#' Default cuts are the 20th, 40th, 60th, and 80th percentiles
 #' @param dir The directory in which to create the Shiny app. Defaults to
-#' \code{\link[base]{tempdir}}.
+#' \code{\link[base]{tempdir}}
 #' 
 #' @examples
-#' data(population_age, package="noncensus")
+#' data(population_age, package = "noncensus")
 #' shiny_choro(population_age, fill = "population", categories = "age_group",
 #'             map = "county", palette = "Purples", background = "Grey")
 #' 
 shiny_choro <- function(df, fill, categories = NULL, 
-                        map = c("County", "State", "World"),
+                        map = c("county", "state", "world"),
                         palette = "Blues",  
                         background = c("Base", "Greyscale", "Physical", "None"), 
                         cuts = NULL, dir = NULL) {
@@ -131,33 +131,33 @@ shiny_choro <- function(df, fill, categories = NULL,
 
 #' Plot a Choropleth
 #'
-#' This function takes a dataframe and generates a choropleth plot.
+#' This function takes a dataframe and generates a choropleth plot
 #'
 #' @export
 #' @importFrom RColorBrewer brewer.pal
-#' @param df The dataframe with at least two columns: One for "fips" (the FIPS 
-#' code of the counties to show), one for the data to show
-#' @param fill The name of the variable to show in the choropleth. 
+#' @param df The dataframe with column "fips" (the FIPS 
+#' code of the counties or states to show), with a column for the data to show
+#' @param fill The name of the variable to show in the choropleth
 #' @param map The level at which to draw the map. Options are "county", "state" 
 #' @param palette An RColorBrewer palette to use. Default is "Blues"
-#' @param cuts An optional vector specifying where to make the color breaks. 
-#' Default cuts are the 20th, 40th, 60th, and 80th percentiles.
+#' @param cuts An optional vector specifying where to make the color breaks 
+#' Default cuts are the 20th, 40th, 60th, and 80th percentiles
 #' 
 #' @examples
 #' data(population_age, package = "noncensus")
 #' df <- plyr::ddply(population_age, "fips", summarize, population = sum(population))
-#' plot_choro(df, fill = "population", grain = "county", palette = "Purples")
+#' plot_choro(df, fill = "population", map = "county", palette = "Purples")
 #' 
-plot_choro <- function(df, fill, grain = c("county", "state"), palette = "Blues", 
+plot_choro <- function(df, fill, map = c("county", "state"), palette = "Blues", 
                        cuts = NULL){
   if (!("fips" %in% names(df))) {
     stop("df must contain 'fips' column")
   }
   
-  if (length(grain) > 1) grain <- grain[1]
-  grain <- match.arg(grain)
+  if (length(map) > 1) map <- map[1]
+  map <- match.arg(map)
   
-  if(grain == "county"){
+  if(map == "county"){
     data(county_polygons)
     df_poly <- merge(county_polygons, df, by = "fips", all.x = T)
   }else {

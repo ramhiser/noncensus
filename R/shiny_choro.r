@@ -186,6 +186,8 @@ plot_choro <- function(df, fill, map = c("county", "state"), palette = "Blues",
   
   plot(c(-125,-68), c(25,50), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
   polygon(county_polygons[,c("long", "lat")], col = fips_colors$color)
+  legend("bottomright", legend = leg_txt, fill = fillColors, cex = 0.6, 
+         text.width = 5)
 }
 
 

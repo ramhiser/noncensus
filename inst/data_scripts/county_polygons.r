@@ -163,7 +163,7 @@ new_poly <- rbind(new_poly, select(tmp, order, fips, names, group, lat, long, co
 ### Alaska polygons (State 2) ####
 atest <- filter(test2, lat > 50)
 atest$long[which(atest$long > 150)] <- -180 - 
-  (180 - atest$long[which(atest$long > 150)])
+  (180 - atest$long[which(atest$long > 150)])  # this is done for pretty plotting
 
 
 alaska_poly <- NULL
@@ -178,7 +178,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,aleutians east"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -194,7 +194,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,aleutians west"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -209,7 +209,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,anchorage"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -223,7 +223,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,bethel"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -237,7 +237,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,bristol bay"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -252,7 +252,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,dillingham"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -266,7 +266,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,north slope"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -281,7 +281,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,northwest arctic"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -295,7 +295,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,wade hampton"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -310,7 +310,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,lake and peninsula"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -325,7 +325,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,kodiak island"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -340,7 +340,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,kenai peninsula"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -356,7 +356,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,valdez-cordova"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -370,7 +370,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,ketchikan gateway"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -385,7 +385,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,juneau"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -400,7 +400,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,haines"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -415,7 +415,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,sitka"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -429,7 +429,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,yakutat"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -445,7 +445,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,nome"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -459,7 +459,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,hoonah-angoon"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -473,7 +473,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,skagway"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -487,7 +487,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,wrangell"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -501,7 +501,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,petersburg"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -515,7 +515,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,prince of wales-hyder"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -529,7 +529,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,denali"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -544,7 +544,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,fairbanks north star"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -558,7 +558,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,matanuska-susitna"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -572,7 +572,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,southeast fairbanks"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }
@@ -586,7 +586,7 @@ for (gp in levels(factor(tmp$group))){
   tmp2$names <- "alaska,yukon-koyukuk"
   tmp2$order <- seq(i, length = nrow(tmp2))
   tmp2$group <- j
-  i <- i + nrow(tmp)
+  i <- i + nrow(tmp2)
   j <- j + 1
   alaska_poly <- rbind(alaska_poly, tmp2)
 }

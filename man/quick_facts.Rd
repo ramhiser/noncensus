@@ -10,10 +10,15 @@ data(quick_facts)
 \description{
 A dataset containing the U.S. Census QuickFacts table of frequently requested
 data items from various Census Bureau programs.
+It should be noted that for "firms", "percent_female_firms", "manu_shipments",
+"merchant_wholesales", "retail_sales", "retail_sales_per_capita",
+"accom_food_sales", and "building_permits", Skagway Municipality is included
+with Hoonah-Angoon Census Area and Wrangell City and Borough is included with
+Petersburg Census Area.
 }
 \details{
 \itemize{
-  \item fips.  FIPS State and County code
+  \item fips.  FIPS State and County code. "0" represents national total.
   \item population_2013.	Population, 2013 estimate
   \item population_2010_base.	Population, 2010 (April 1) estimates base
   \item population_change_percent.	Population, percent change from April 1, 2010 to July 1, 2013

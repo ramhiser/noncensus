@@ -32,7 +32,7 @@ shiny_choro <- function(df, fill, categories = NULL,
                         palette = "Blues",  
                         background = c("Base", "Greyscale", "Physical", "None"), 
                         cuts = NULL, dir = NULL) {
- 
+  
   if (!require(shiny)) {
     stop("You must have 'shiny' installed to run the Shiny application 
          -- try: install.packages('shiny').",
@@ -45,7 +45,7 @@ shiny_choro <- function(df, fill, categories = NULL,
   }
   if (!require(leaflet)) {
     stop("You must have 'leaflet' installed to run the Shiny application 
--- try: install_github('jcheng5/leaflet-shiny').",
+         -- try: install_github('jcheng5/leaflet-shiny').",
          call. = F)
   }
   
@@ -58,12 +58,12 @@ shiny_choro <- function(df, fill, categories = NULL,
   if (!("fips" %in% names(df))) {
     stop("df must contain 'fips' column")
   }
-
+  
   fill <- as.character(fill)
   if (!(fill %in% names(df))) {
     stop("df does not contain fill column")
   }
-
+  
   if (is.null(categories)) {
     df <- df[, c("fips", fill)]
     old_names <- fill
@@ -73,7 +73,7 @@ shiny_choro <- function(df, fill, categories = NULL,
     if (!(categories %in% names(df))) {
       stop("df does not contain categories column")
     }
-
+    
     df <- df[, c("fips", categories, fill)]
     old_names <- c(fill, categories)
     names(df)[2:3] <- c("categories", "fill")
@@ -86,16 +86,16 @@ shiny_choro <- function(df, fill, categories = NULL,
   if (length(background) > 1) bacakground <- background[1]
   background <- match.arg(background)
   tiles <- c("Base" = "http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png",
-              "Greyscale" = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
-              "Physical" = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}")
+             "Greyscale" = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
+             "Physical" = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}")
   attributes <- c("Base" = 'Tiles courtesy of <a href="http://hot.openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map df &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-               "Greyscale" = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map df &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-               "Physical" = "Tiles &copy; Esri &mdash; Source: US National Park Service")
+                  "Greyscale" = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map df &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+                  "Physical" = "Tiles &copy; Esri &mdash; Source: US National Park Service")
   tile <- ifelse(background == "None", NA, tiles[background])
   attribute <- ifelse(background == "None", NA, attributes[background])
   
   dir.create(dir, showWarnings = F, recursive = T)
-
+  
   file.copy(file.path(system.file(package = "noncensus"), "shiny/."), 
             file.path(dir), recursive = T)
   
@@ -116,7 +116,7 @@ shiny_choro <- function(df, fill, categories = NULL,
   # TODO: Could add cat/legend labels or loquesea here later too
   extras <- list("bg_tile" = tile, "bg_attr" = attribute, "colors" = fillColors,
                  "legend" = leg_txt, "old" = old_names, "map" = map)
-
+  
   # Copies data to temp files to be loaded by Shiny app
   saveRDS(df, file = file.path(dir, "data/data.rds"))
   saveRDS(extras, file = file.path(dir, "data/extras.rds"))
@@ -142,14 +142,16 @@ shiny_choro <- function(df, fill, categories = NULL,
 #' @param palette An RColorBrewer palette to use. Default is "Blues"
 #' @param cuts An optional vector specifying where to make the color breaks 
 #' Default cuts are the 20th, 40th, 60th, and 80th percentiles
+#' @param continental A logical whether to show the continental US
 #' 
 #' @examples
 #' data(population_age, package = "noncensus")
 #' df <- plyr::ddply(population_age, "fips", summarize, population = sum(population))
-#' plot_choro(df, fill = "population", map = "county", palette = "Purples")
+#' plot_choro(df, fill = "population", map = "county", palette = "Purples", 
+#' continental = T)
 #' 
 plot_choro <- function(df, fill, map = c("county", "state"), palette = "Blues", 
-                       cuts = NULL){
+                       cuts = NULL, continental = T){
   if (!("fips" %in% names(df))) {
     stop("df must contain 'fips' column")
   }
@@ -184,8 +186,18 @@ plot_choro <- function(df, fill, map = c("county", "state"), palette = "Blues",
   fips_colors <- merge(data.frame("group" = 1:max(df_poly$group, na.rm = T)), 
                        fips_colors, by = "group", all.x = T)
   
-  plot(c(-125,-68), c(25,50), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
-  polygon(county_polygons[,c("long", "lat")], col = fips_colors$color)
+  if (continental){
+    plot(c(-125,-68), c(25,50), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
+    polygon(county_polygons[,c("long", "lat")], col = fips_colors$color)
+    legend("bottomright", legend = leg_txt, fill = fillColors, cex = 0.6, 
+           text.width = 5)
+  } else {
+    plot(c(-190,-68), c(17,70), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
+    polygon(county_polygons[,c("long", "lat")], col = fips_colors$color)
+    legend("topright", legend = leg_txt, fill = fillColors, cex = 0.6, 
+           text.width = 15)
+  }
+  
 }
 
 

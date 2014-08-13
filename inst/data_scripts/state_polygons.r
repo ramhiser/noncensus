@@ -23,6 +23,54 @@ state_df[nas, c("fips", "group", "state")] <- state_df[nas+1, c("fips", "group",
 state_df <- state_df %>% arrange(group, order)
 state_df$region <- NULL
 
-state_polygons <- state_df
+
+tmpdir <- tempdir()
+fle <- basename("http://www2.census.gov/geo/tiger/GENZ2013/cb_2013_us_state_20m.zip")
+download.file("http://www2.census.gov/geo/tiger/GENZ2013/cb_2013_us_state_20m.zip", fle)
+unzip(fle, exdir = tmpdir)
+tt <- readShapeSpatial(paste(path.expand(tmpdir), "cb_2013_us_state_20m.shp", sep = "/"))
+unlink(tmpdir)
+proj4string(tt) <- CRS("+proj=longlat +datum=NAD27")
+st <- fortify(tt)
+
+hi_poly <- NULL
+ak_poly <- NULL
+
+hst <- filter(st, long < -150, lat < 23)
+i <- max(state_df$order) + 1
+j <- max(state_df$group) + 1
+for (gp in levels(factor(hst$group))){
+  tmp2 <- filter(hst, group == gp)
+  tmp2 <- rbind(NA, tmp2)
+  tmp2$fips <- 15
+  tmp2$state <- "Hawaii"
+  tmp2$order <- seq(i, length = nrow(tmp2))
+  tmp2$group <- j
+  i <- i + nrow(tmp2)
+  j <- j + 1
+  hi_poly <- rbind(hi_poly, tmp2)
+}
+hi_poly <- select(hi_poly, order, long, lat, group, state, fips)
+
+
+ast <- filter(st, lat > 50)
+ast$long[which(ast$long > 150)] <- -180 - 
+  (180 - ast$long[which(ast$long > 150)])
+
+for (gp in levels(factor(ast$group))){
+  tmp2 <- filter(ast, group == gp)
+  tmp2 <- rbind(NA, tmp2)
+  tmp2$fips <- 2
+  tmp2$state <- "Alaska"
+  tmp2$order <- seq(i, length = nrow(tmp2))
+  tmp2$group <- j
+  i <- i + nrow(tmp2)
+  j <- j + 1
+  ak_poly <- rbind(ak_poly, tmp2)
+}
+ak_poly <- select(ak_poly, order, long, lat, group, state, fips)
+
+state_polygons <- rbind(state_df, hi_poly, ak_poly)
+
 
 save(state_polygons, file="../../data/state_polygons.RData", compress='xz')

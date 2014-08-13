@@ -3,20 +3,22 @@
 \alias{shiny_choro}
 \title{Start a Shiny Application for Choropleths}
 \usage{
-shiny_choro(df, fill, categories = NULL, palette = "Blues",
-  background = c("Base", "Greyscale", "Physical", "None"), cuts = NULL,
-  dir = NULL)
+shiny_choro(df, fill, categories = NULL, map = c("county", "state",
+  "world"), palette = "Blues", background = c("Base", "Greyscale",
+  "Physical", "None"), cuts = NULL, dir = NULL)
 }
 \arguments{
-\item{df}{The dataframe with at least three columns: One for "fips" (the FIPS
-code of the counties to show), one for the data to show, and one for
-grouping variable}
+\item{df}{The dataframe with column "fips" (the FIPS
+code of the counties or states to show), with a column for the data to show,
+and a column for the grouping variable (if specifing categories)}
 
-\item{fill}{The name of the variable to show in the choropleth. Must be
-continuous.}
+\item{fill}{The name of the variable to show in the choropleth}
 
 \item{categories}{The name of the (optional) grouping variable on which to
 divide the data}
+
+\item{map}{The level at which to draw the map. Options are "county", "state",
+"world"}
 
 \item{palette}{An RColorBrewer palette to use. Default is "Blues"}
 
@@ -24,10 +26,10 @@ divide the data}
 as the background tiles for the map}
 
 \item{cuts}{An optional vector specifying where to make the color breaks.
-Default cuts are the 20th, 40th, 60th, and 80th percentiles.}
+Default cuts are the 20th, 40th, 60th, and 80th percentiles}
 
 \item{dir}{The directory in which to create the Shiny app. Defaults to
-\code{\link[base]{tempdir}}.}
+\code{\link[base]{tempdir}}}
 }
 \description{
 This function takes a dataframe and generates a local Shiny application for
@@ -35,8 +37,8 @@ visualizing the results in a choropleth. The Shiny, dplyr, and leaflet
 libraries must be installed.
 }
 \examples{
-data(population_age, package="noncensus")
+data(population_age, package = "noncensus")
 shiny_choro(population_age, fill = "population", categories = "age_group",
-            palette = "Purples", background = "Grey")
+            map = "county", palette = "Purples", background = "Grey")
 }
 

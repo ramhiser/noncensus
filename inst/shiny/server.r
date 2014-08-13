@@ -89,13 +89,13 @@ shinyServer(function(input, output, session) {
       isolate({
         cdata <- companyToUse()
         county <- cdata[cdata$group == event$id,]
-        if(grain == "County"){
+        if(grain == "county"){
           center <- county %>% 
             group_by("fips", "names", "county", "fill") %>% filter(!is.na(lat)) %>% 
             summarize(clong = mean(long), clat = mean(lat)) 
           names(center)[3] <- "grain"
           
-        }else if(grain == "State"){
+        }else if(grain == "state"){
           center <- county %>% 
             group_by("fips", "state", "fill") %>% filter(!is.na(lat)) %>% 
             summarize(clong = mean(long), clat = mean(lat)) 

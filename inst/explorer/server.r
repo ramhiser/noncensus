@@ -81,18 +81,23 @@ session$onFlushed(once=TRUE, function() {
     
    comp_data <- comp_two[, c("fips", "order", "names", "group", "lat", "long", 
                              "county", category)]
-   
-   
+  
+   if(category %in% c("population_change_percent", "pnfe_percent_change")){
+     cuts <- unique(c(seq(min(quick_facts[,category], na.rm = T), 0, length.out = 4), 
+               seq(0, max(quick_facts[,category], na.rm = T), length.out = 4)))
+     fillColors <- unlist(brewer.pal(length(cuts) - 1, "RdYlBu"))
+   } else {
      cuts <- c(unique(quantile(comp_data[,8], seq(0, 1, 1/5), na.rm = T)))
      fillColors <- unlist(brewer.pal(length(cuts) - 1, "YlOrRd"))
-
+   }
+  
    
    comp_data$fillKey <- noncensus:::cut_nice(comp_data[,8], cuts, 
                                              ordered_result = T, 
                                              include.lowest = T)
    comp_data$colorBuckets <- as.numeric(comp_data$fillKey) 
    comp_data$color <- fillColors[comp_data$colorBuckets]
-   comp_data$color <- factor(comp_data$color, ordered = T)
+   comp_data$color <- factor(comp_data$color, levels = fillColors)
 
    nas <- which(is.na(comp_data[,category]) & !is.na(comp_data[,"lat"]))
    if(length(nas) > 0){
@@ -139,12 +144,10 @@ session$onFlushed(once=TRUE, function() {
     }
     
     leg_col <- levels(dataToUse()$color)
-    #deal with switched order
     ln_col <- length(leg_col)
-    leg_col <- c(leg_col[1:(ln_col - 1)][(ln_col-1):1], leg_col[ln_col])
     LL <- vector("list", length(leg_col))  
     leg_txt <- levels(dataToUse()$fillKey)
-    for(i in 1:length(leg_col)){
+    for(i in 1:ln_col){
       LL[[i]] <- list(tags$div(class = "color-box", 
                                style=paste("background-color:", 
                                            leg_col[i], ";")), 

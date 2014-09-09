@@ -29,7 +29,6 @@ comp_two <- comp_two %>% arrange(group, order)
   comp_two <- merge(state_polygons, county_data, by = "fips", all.x = T)
   comp_two <- comp_two %>% arrange(group, order)
 } else {
-  stop("World polygons not yet implemented")
   data(world_polygons)
   comp_two <- merge(world_polygons, county_data, by = "fips", all.x = T)
   comp_two <- comp_two %>% arrange(group, order)

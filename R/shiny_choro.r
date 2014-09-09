@@ -82,8 +82,7 @@ shiny_choro <- function(df, fill, categories = NULL,
   
   if (length(map) > 1) map <- map[1]
   map <- match.arg(map)
-  if (map == "world") stop("World polygons not yet implemented")
-  if (length(background) > 1) bacakground <- background[1]
+  if (length(background) > 1) background <- background[1]
   background <- match.arg(background)
   tiles <- c("Base" = "http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png",
              "Greyscale" = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",

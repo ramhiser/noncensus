@@ -18,7 +18,7 @@ shinyServer(function(input, output, session) {
   
   output$Legend <- renderUI({
     LL <- vector("list", length(fillColors))        
-    for(i in 1:length(fillColors)){
+    for (i in seq_along(fillColors)) {
       LL[[i]] <- list(tags$div(class = "color-box", 
                                style=paste("background-color:", 
                                            fillColors[i], ";")), 
@@ -47,12 +47,11 @@ shinyServer(function(input, output, session) {
   session$onFlushed(once=TRUE, function() {
     
     companyToUse <- reactive({
-      if (is.null(comp_two$categories)){
+      if (is.null(comp_two$categories)) {
         comp_two
       } else {
         filter(comp_two,
                categories == input$cats | is.na(categories))
-        
       }
     })
     
@@ -61,10 +60,16 @@ shinyServer(function(input, output, session) {
       comp_data <- companyToUse()
       
       map$clearShapes()
-      fips_colors <- unique(comp_data[!is.na(comp_data$color),c("fips", "color", "group")])
-      fips_colors <- merge(data.frame("group" = 1:max(comp_data$group, na.rm = T)), 
-                           fips_colors, by = "group", all.x = T)
-      
+
+      fips_colors <- comp_data %>% dplyr::filter(!is.na(color)) %>%
+        dplyr::select(fips, color, group) %>%
+        unique(.)
+
+      max_group <- max(comp_data$group, na.rm=TRUE)
+      groups_df <- tbl_df(data.frame(group=seq_len(max_group)))
+
+      fips_colors <- merge(groups_df, fips_colors, by = "group", all.x = T)
+
       map$addPolygon(comp_data$lat, comp_data$long, 
                      fips_colors$group,
                      lapply(fips_colors$color, function(x) {
@@ -76,7 +81,6 @@ shinyServer(function(input, output, session) {
     })
     
     session$onSessionEnded(paintObs$suspend)
-    
     
     clickObs <- observe({
       event <- input$map_shape_click

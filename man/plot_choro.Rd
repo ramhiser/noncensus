@@ -4,7 +4,7 @@
 \title{Plot a Choropleth}
 \usage{
 plot_choro(df, fill, map = c("county", "state"), palette = "Blues",
-  cuts = NULL, continental = T)
+  cuts = NULL, continental = TRUE)
 }
 \arguments{
 \item{df}{The dataframe with column "fips" (the FIPS
@@ -28,6 +28,6 @@ This function takes a dataframe and generates a choropleth plot
 data(population_age, package = "noncensus")
 df <- plyr::ddply(population_age, "fips", summarize, population = sum(population))
 plot_choro(df, fill = "population", map = "county", palette = "Purples",
-continental = T)
+continental = TRUE)
 }
 

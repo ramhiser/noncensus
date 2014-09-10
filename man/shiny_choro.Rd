@@ -10,7 +10,7 @@ shiny_choro(df, fill, categories = NULL, map = c("county", "state",
 \arguments{
 \item{df}{The dataframe with column "fips" (the FIPS
 code of the counties or states to show), with a column for the data to show,
-and a column for the grouping variable (if specifing categories)}
+and a column for the grouping variable (if specifying categories)}
 
 \item{fill}{The name of the variable to show in the choropleth}
 

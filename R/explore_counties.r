@@ -7,11 +7,10 @@
 #' @export
 #' @seealso \code{\link{quick_facts}} for a description of the dataset
 #' 
-#' @example
+#' @examples
 #' explore_counties()
 #'
-
-explore_counties <- function(){
+explore_counties <- function() {
   if (!require(shiny)) {
     stop("You must have 'shiny' installed to run the Shiny application 
          -- try: install.packages('shiny').",

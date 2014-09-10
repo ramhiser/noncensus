@@ -1,24 +1,25 @@
 #' Start a Shiny Application for Choropleths
 #'
 #' This function takes a dataframe and generates a local Shiny application for 
-#' visualizing the results in a choropleth. The Shiny, dplyr, and leaflet 
-#' libraries must be installed.
+#' visualizing the results in a choropleth.
+#'
+#' NOTE: The \code{leaflet} R package must be installed.
 #'
 #' @export
 #' @importFrom shiny runApp
 #' @importFrom dplyr mutate
 #' @importFrom RColorBrewer brewer.pal
-#' @param df The dataframe with column "fips" (the FIPS 
-#' code of the counties or states to show), with a column for the data to show, 
-#' and a column for the grouping variable (if specifying categories)
+#' @param df The dataframe with column \code{fips} (the FIPS code of the
+#' counties or states to show), with a column for the data to show, and a column
+#' for the grouping variable (if specifying categories)
 #' @param fill The name of the variable to show in the choropleth
-#' @param categories The name of the (optional) grouping variable on which to 
+#' @param categories The name of the (optional) grouping variable on which to
 #' divide the data
-#' @param map The level at which to draw the map. Options are "county", "state", 
-#' "world"
-#' @param palette An RColorBrewer palette to use. Default is "Blues"
-#' @param background One of "Base", "Greyscale", "Physical", or "None", to have
-#' as the background tiles for the map
+#' @param map The level at which to draw the map. Options are \code{county},
+#' \code{state}, and \code{world}
+#' @param palette An RColorBrewer palette to use. Default is \code{Blues}
+#' @param background One of \code{Base}, \code{Greyscale}, \code{Physical}, or
+#' \code{None}, to have as the background tiles for the map
 #' @param cuts An optional vector specifying where to make the color breaks. 
 #' Default cuts are the 20th, 40th, 60th, and 80th percentiles
 #' @param dir The directory in which to create the Shiny app. Defaults to

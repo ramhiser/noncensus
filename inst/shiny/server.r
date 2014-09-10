@@ -13,7 +13,6 @@ bindEvent <- function(eventExpr, callback, env=parent.frame(), quoted=FALSE) {
 
 
 shinyServer(function(input, output, session) {
-
   
   map <- createLeafletMap(session, "map")
   
@@ -57,7 +56,6 @@ shinyServer(function(input, output, session) {
       }
     })
     
-    
     paintObs <- observe({
       
       comp_data <- companyToUse()
@@ -88,14 +86,14 @@ shinyServer(function(input, output, session) {
       
       isolate({
         cdata <- companyToUse()
-        county <- cdata[cdata$group == event$id,]
-        if(grain == "county"){
+        county <- cdata[cdata$group == event$id, ]
+        if (grain == "county") {
           center <- county %>% 
             group_by("fips", "names", "county", "fill") %>% filter(!is.na(lat)) %>% 
             summarize(clong = mean(long), clat = mean(lat)) 
           names(center)[3] <- "grain"
           
-        }else if(grain == "state"){
+        } else if (grain == "state") {
           center <- county %>% 
             group_by("fips", "state", "fill") %>% filter(!is.na(lat)) %>% 
             summarize(clong = mean(long), clat = mean(lat)) 

@@ -1,5 +1,5 @@
-library(shiny)
 library(noncensus)
+library(shiny)
 library(leaflet)
 library(dplyr)
 
@@ -27,14 +27,14 @@ if (is.na(attr)) {
 
 if (grain == "county") {
   data(county_polygons, package="noncensus")
-  comp_two <- merge(county_polygons, county_data, by = "fips", all.x = TRUE)
+  comp_two <- dplyr::left_join(county_polygons, county_data, by = "fips")
 } else if (grain == "state") {
   data(state_polygons, package="noncensus")
-  comp_two <- merge(state_polygons, county_data, by = "fips", all.x = TRUE)
+  comp_two <- dplyr::left_join(state_polygons, county_data, by = "fips")
 } else {
   stop("World polygons not yet implemented")
   data(world_polygons, package="noncensus")
-  comp_two <- merge(world_polygons, county_data, by = "fips", all.x = TRUE)
+  comp_two <- dplyr::left_join(world_polygons, county_data, by = "fips")
 }
 
 comp_two <- dplyr::tbl_df(comp_two)

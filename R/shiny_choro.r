@@ -7,7 +7,7 @@
 #' @export
 #' @importFrom RColorBrewer brewer.pal
 #' @param df The dataframe with column "fips" (the FIPS 
-#' code of the counties or states to show), with a column for the data to show, 
+#' code of the map to show), with a column for the data to show, 
 #' and a column for the grouping variable (if specifing categories)
 #' @param fill The name of the variable to show in the choropleth
 #' @param categories The name of the (optional) grouping variable on which to 
@@ -137,7 +137,8 @@ shiny_choro <- function(df, fill, categories = NULL,
 #' @param df The dataframe with column "fips" (the FIPS 
 #' code of the counties or states to show), with a column for the data to show
 #' @param fill The name of the variable to show in the choropleth
-#' @param map The level at which to draw the map. Options are "county", "state" 
+#' @param map The level at which to draw the map. Options are "county", "state", 
+#' "world" 
 #' @param palette An RColorBrewer palette to use. Default is "Blues"
 #' @param cuts An optional vector specifying where to make the color breaks 
 #' Default cuts are the 20th, 40th, 60th, and 80th percentiles
@@ -149,7 +150,8 @@ shiny_choro <- function(df, fill, categories = NULL,
 #' plot_choro(df, fill = "population", map = "county", palette = "Purples", 
 #' continental = T)
 #' 
-plot_choro <- function(df, fill, map = c("county", "state"), palette = "Blues", 
+plot_choro <- function(df, fill, map = c("county", "state", "world"), 
+                       palette = "Blues", 
                        cuts = NULL, continental = T){
   if (!("fips" %in% names(df))) {
     stop("df must contain 'fips' column")
@@ -160,14 +162,17 @@ plot_choro <- function(df, fill, map = c("county", "state"), palette = "Blues",
   
   if(map == "county"){
     data(county_polygons)
-    df_poly <- merge(county_polygons, df, by = "fips", all.x = T)
-  }else {
+    df_poly <- left_join(county_polygons, df, by = "fips")
+  } else if (map == "state"){
     data(state_polygons)
-    df_poly <- merge(state_polygons, df, by = "fips", all.x = T)
+    df_poly <- left_join(state_polygons, df, by = "fips")
+  } else {
+    data(world_polygons)
+    df_poly <- left_join(world_polygons, df, by = "fips")
   }
   df_poly <- arrange(df_poly, order)
   
-  if (is.null(cuts)) {
+  if (is.null(cuts)){
     if (is.numeric(df_poly[,fill])) {
       cuts <- unique(quantile(df_poly[,fill], seq(0, 1, 1/5), na.rm = T))
     } else {
@@ -176,32 +181,38 @@ plot_choro <- function(df, fill, map = c("county", "state"), palette = "Blues",
   }
   
   fillColors <- unlist(brewer.pal(length(cuts) - 1, palette))
-  df_poly <- mutate(df_poly, fillKey = cut_nice(df_poly[,fill], cuts, ordered_result = T))
+  df_poly <- mutate(df_poly, fillKey = cut_nice(df_poly[,fill], cuts, 
+                                                ordered_result = T))
   df_poly$colorBuckets <- as.numeric(df_poly$fillKey)
   leg_txt <- levels(df_poly$fillKey)
   df_poly$color <- fillColors[df_poly$colorBuckets]
   
   fips_colors <- unique(df_poly[!is.na(df_poly$color),c("fips", "color", "group")])
-  fips_colors <- merge(data.frame("group" = 1:max(df_poly$group, na.rm = T)), 
+  fips_colors <- merge(data.frame("group" = unique(na.omit(df_poly$group))), 
                        fips_colors, by = "group", all.x = T)
-  
+  if (map == "world"){
+    plot(c(-180,180), c(-80,80), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
+    polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
+    legend("bottomleft", legend = leg_txt, fill = fillColors, cex = 0.6, 
+           text.width = 50)
+  } else {
   if (continental){
     plot(c(-125,-68), c(25,50), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
-    polygon(county_polygons[,c("long", "lat")], col = fips_colors$color)
+    polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
     legend("bottomright", legend = leg_txt, fill = fillColors, cex = 0.6, 
            text.width = 5)
   } else {
     plot(c(-190,-68), c(17,70), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
-    polygon(county_polygons[,c("long", "lat")], col = fips_colors$color)
+    polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
     legend("topright", legend = leg_txt, fill = fillColors, cex = 0.6, 
            text.width = 15)
   }
-  
+  }
 }
 
 
 # Helper function based on base:::cut.default()
-cut_nice <- function (x, breaks, labels = NULL, include.lowest = FALSE,
+cut_nice <- function (x, breaks, labels = NULL, include.lowest = TRUE,
                       right = TRUE, dig.lab = 3L, ordered_result = FALSE, ...) {
   if (!is.numeric(x)) {
     stop("'x' must be numeric")

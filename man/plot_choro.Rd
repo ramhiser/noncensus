@@ -3,7 +3,7 @@
 \alias{plot_choro}
 \title{Plot a Choropleth}
 \usage{
-plot_choro(df, fill, map = c("county", "state"), palette = "Blues",
+plot_choro(df, fill, map = c("county", "state", "world"), palette = "Blues",
   cuts = NULL, continental = T)
 }
 \arguments{
@@ -12,7 +12,8 @@ code of the counties or states to show), with a column for the data to show}
 
 \item{fill}{The name of the variable to show in the choropleth}
 
-\item{map}{The level at which to draw the map. Options are "county", "state"}
+\item{map}{The level at which to draw the map. Options are "county", "state",
+"world"}
 
 \item{palette}{An RColorBrewer palette to use. Default is "Blues"}
 

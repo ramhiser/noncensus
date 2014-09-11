@@ -19,18 +19,24 @@ tile <- extra_data$bg_tile
 if (is.na(tile)) tile <- NULL
 attr <- extra_data$bg_attr
 if (is.na(attr)) attr <- NULL
+if (grain == "world"){
+  opts <- list(center = c(0, 0), zoom = 2)
+} else {
+  opts <- list(center = c(37.45, -93.85), zoom = 4)
+}
+
 
 if (grain == "county"){
-data(county_polygons)
-comp_two <- merge(county_polygons, county_data, by = "fips", all.x = T)
-comp_two <- comp_two %>% arrange(group, order)
+  data(county_polygons)
+  comp_two <- left_join(county_polygons, county_data, by = "fips")
+  comp_two <- comp_two %>% arrange(group, order)
 } else if (grain == "state"){
   data(state_polygons)
-  comp_two <- merge(state_polygons, county_data, by = "fips", all.x = T)
+  comp_two <- left_join(state_polygons, county_data, by = "fips")
   comp_two <- comp_two %>% arrange(group, order)
 } else {
   data(world_polygons)
-  comp_two <- merge(world_polygons, county_data, by = "fips", all.x = T)
+  world_polygons <- filter(world_polygons, !is.na(fips))
+  comp_two <- left_join(world_polygons, county_data, by = "fips")
   comp_two <- comp_two %>% arrange(group, order)
 }
-

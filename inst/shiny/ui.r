@@ -10,12 +10,7 @@ shinyUI(fluidPage(
                  initialTileLayer = tile,
                  initialTileLayerAttribution = attr, 
                  
-                 options=list(
-                   center = c(37.45, -93.85),
-                   zoom = 4
-                   #,
-                  # maxBounds = list(list(15.961329,-129.92981), list(52.908902,-56.80481)) # Show US only
-                 )
+                 options = opts
       ),
       uiOutput("cats"), 
       absolutePanel(id = "legend", class = "modal", fixed = TRUE, 

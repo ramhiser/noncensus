@@ -13,7 +13,7 @@ bindEvent <- function(eventExpr, callback, env=parent.frame(), quoted=FALSE) {
 
 
 shinyServer(function(input, output, session) {
-
+  
   
   map <- createLeafletMap(session, "map")
   
@@ -37,9 +37,9 @@ shinyServer(function(input, output, session) {
                          draggable = TRUE, top = 20, left = "auto", right = 20, 
                          bottom = "auto", width = 200, height = "auto",
                          h4("Category select"),
-           selectInput(inputId="cats",
-                       label="Category to show",
-                       choices=county_cats)))
+                         selectInput(inputId="cats",
+                                     label="Category to show",
+                                     choices=county_cats)))
   })
   
   
@@ -100,8 +100,12 @@ shinyServer(function(input, output, session) {
             group_by("fips", "state", "fill") %>% filter(!is.na(lat)) %>% 
             summarize(clong = mean(long), clat = mean(lat)) 
           names(center)[2] <- "grain"
+        } else {
+          center <- county %>% 
+            group_by("fips", "name", "fill") %>% filter(!is.na(lat)) %>% 
+            summarize(clong = mean(long), clat = mean(lat)) 
+          names(center)[2] <- "grain"
         }
-        #TODO: World polygons
         content <- as.character(tagList(
           tags$strong(center$grain),
           tags$br(),

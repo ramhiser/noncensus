@@ -54,21 +54,16 @@ shinyServer(function(input, output, session) {
                categories == input$cats | is.na(categories))
       }
     })
-    
+
     paintObs <- observe({
-      
       comp_data <- companyToUse()
-      
-      map$clearShapes()
-
-      fips_colors <- comp_data %>% dplyr::filter(!is.na(color)) %>%
+      fips_colors <- comp_data %>%
         dplyr::select(fips, color, group) %>%
-        unique(.)
+        unique %>%
+        arrange(group)
 
-      max_group <- max(comp_data$group, na.rm=TRUE)
-      groups_df <- tbl_df(data.frame(group=seq_len(max_group)))
-
-      fips_colors <- merge(groups_df, fips_colors, by = "group", all.x = T)
+      map$clearShapes()
+      map$clearPopups()
 
       map$addPolygon(comp_data$lat, comp_data$long, 
                      fips_colors$group,

@@ -592,7 +592,7 @@ for (gp in levels(factor(tmp$group))){
 }
 alaska_poly <- select(alaska_poly, order, fips, names, group, lat, long, county)
 
-
 county_polygons <- rbind(counties_df, new_poly, alaska_poly)
+county_polygons <- tbl_df(county_polygons)
 
 save(county_polygons, file="../../data/county_polygons.RData", compress='xz')

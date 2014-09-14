@@ -1,0 +1,158 @@
+<!--
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{U.S. Census Region and Demographic Data}
+-->
+
+```{r, echo=FALSE, message=FALSE}
+library(noncensus)
+library(dplyr)
+knitr::opts_chunk$set(
+  comment="#>",
+  error=FALSE,
+  tidy=FALSE)
+options(dplyr.print_min = 4L, dplyr.print_max = 8L)
+```
+
+# U.S. Census Region and Demographic Data
+
+The goal of this document is to provide an introduction to the collection of
+various data sets within `noncensus` provided by the U.S. Census Bureau. We
+describe each data set briefly and refer the reader to each data set's help
+documentation for further details. Each data set is stored as a `tbl_df` object
+from the `dplyr` package rather than a standard data frame. Also, within the
+`inst/data_scripts/` folder, we have also included scripts to download, process,
+and load the original data from their sources.
+
+## Data: U.S. States and Territories
+
+A dataset containing demographic information and the census regions of each
+U.S. state as defined by the U.S. Census Bureau. Also included are the
+U.S. territories, such as Puerto Rico and Guam.
+
+In addition to the state information, each state is allocated to one of four
+regions:
+
+1. Midwest
+2. Northeast
+3. South
+4. West
+
+Within each region, states are further partitioned into divisions. For more
+details about census regions and divisions, see [this Wikipedia article](http://en.wikipedia.org/wiki/List_of_regions_of_the_United_States#Census_Bureau-designated_regions_and_divisions).
+Much of the state data was extracted from the [U.S. Census Bureau](http://www.census.gov/popest/data/state/totals/2013/index.html).
+
+
+```{r}
+data(states, package="noncensus")
+states
+```
+
+## Data: U.S. Counties and County-Equivalent Entities
+
+This data set contains state and county FIPS codes for U.S. counties and
+county-equivalent entities (CEE), which includes non-state locations, such as
+Puerto Rico (PR) and Guam (GU). Each U.S. county is uniquely identified by its
+[FIPS code](http://en.wikipedia.org/wiki/Federal_Information_Processing_Standards).
+
+The U.S. Census Bureau groups counties into Combined Statistical Area (CSAs) and
+Core-based Statistical Area (CBSAs) primarily based on county population and
+economic activity. We provide further details about these areas in another
+section below. **NOTE**: Not all counties are members of a CSA or CBSA.
+
+For further details about FIPS codes and classes, see the [Census Bureau's
+website](http://www.census.gov/geo/reference/codes/cou.html).
+
+```{r}
+data(counties, package="noncensus")
+counties
+```
+
+## Data: U.S. Cities by Zip Code
+
+This data set considers each zip code throughout the U.S. and provides
+additional information, including the city and state, latitude and longitude,
+and the FIPS code for the corresponding county.
+
+The ZIP code data was obtained from [the zipcode R
+package](http://cran.r-project.org/web/packages/zipcode/index.html). The county
+FIPS codes were obtained by querying the FIPS code from each zip's latitude and
+longitude via [the FCC's Census Block Conversions
+API](http://www.fcc.gov/developers/census-block-conversions-api).  The FIPS
+codes are useful for mapping ZIP codes and cities to counties in the `counties`
+data set.
+
+Fun fact: ZIP is an acronym for **Zone Improvement Plan.**
+
+```{r}
+data(zip_codes, package="noncensus")
+zip_codes
+```
+
+## Data: Combined and Core-based Statistical Areas
+
+The U.S. Census Bureau groups counties into combined statistical areas (CSAs)
+and core-based statistical areas (CBSAs) primarily based on county population
+and economic activity. NOTE: Not all counties are members of a CSA or CBSA. For
+a detailed description, Wikipedia has excellent discussions of both areas:
+[CSAs](http://en.wikipedia.org/wiki/Combined_Statistical_Area) and
+[CBSAs](http://en.wikipedia.org/wiki/Core_Based_Statistical_Area). Also, the
+following map from Wikipedia is excellent to visualize the areas:
+
+![U.S. Statistical Areas](http://upload.wikimedia.org/wikipedia/commons/7/7b/Combined_statistical_areas_of_the_United_States_and_Puerto_Rico.gif)
+
+
+```{r}
+data(combined_areas, package="noncensus")
+combined_areas
+```
+
+```{r}
+data(corebased_areas, package="noncensus")
+corebased_areas
+```
+
+## Data: County Population Data by Age
+
+A dataset containing the population totals and percentages for each US county
+by age of inhabitant. The variables are as follows:
+
+\itemize{
+  \item fips. FIPS code for the county  
+  \item age_group. Age groups are in 5 year intervals 
+  \item population. Count of people in that county in that age group
+  \item percent. Percent of that county's total population in that age group
+}
+
+```{r}
+data(population_age, package="noncensus")
+population_age
+```
+
+## Data: Income, Poverty, and Health Insurance in the U.S.
+
+A dataset containing the U.S. Census QuickFacts table of frequently requested
+data items from various Census Bureau programs, including population, age
+groups, race, and miscellaneous household and economic information by county.
+
+The row with FIPS code of 0 provides the demographic data for the entire U.S.
+
+```{r}
+data(quick_facts, package="noncensus")
+quick_facts
+```
+
+## Data: Polygons of Each U.S. County's Geographical Shape
+
+Data containing the vertices to describe each U.S. county's geographical
+shape as a polygon. Vertices are given in terms of latitude and
+longitude. The order in which the vertices should be drawn are also given by
+`order`.
+
+**NOTE**: A small number of counties have multiple groups. Typically, these
+counties are separated into multiple polygons by, say, a body of water.
+Example: Galveston, Texas (FIPS == 48167).
+
+```{r}
+data(county_polygons, package="noncensus")
+county_polygons
+```

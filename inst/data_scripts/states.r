@@ -140,5 +140,6 @@ states$state <- factor(states$state)
 states$region <- factor(states$region)
 states$division <- factor(states$division)
 
+states <- tbl_df(states)
 
-save(states, file="../../data/states.RData")
+save(states, file="../../data/states.RData", compress='xz')

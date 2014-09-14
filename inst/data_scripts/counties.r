@@ -117,6 +117,8 @@ levels(corebased_areas$name) <- iconv(
       "UTF-8"
     )
 
+combined_areas <- tbl_df(combined_areas)
+corebased_areas <- tbl_df(corebased_areas)
 
 # Saves the lookup tables of CSAs and CBSAs
 save(combined_areas, file="../../data/combined_areas.RData", compress='xz')

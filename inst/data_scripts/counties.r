@@ -97,6 +97,8 @@ counties$fips_class <- factor(counties$fips_class)
 counties$CSA <- factor(counties$CSA)
 counties$CBSA <- factor(counties$CBSA)
 
+counties <- tbl_df(counties)
+
 save(counties, file="../../data/counties.RData", compress='xz')
 
 # Updates the encoding where Unicode is in a city/county name

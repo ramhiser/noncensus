@@ -63,9 +63,7 @@ shinyServer(function(input, output, session) {
       comp_data <- companyToUse()
       
       map$clearShapes()
-      fips_colors <- unique(comp_data[!is.na(comp_data$color),c("fips", "color", "group")])
-      fips_colors <- merge(data.frame("group" = 1:max(comp_data$group, na.rm = T)), 
-                           fips_colors, by = "group", all.x = T)
+      fips_colors <- unique(comp_data[!is.na(comp_data$lat),c("fips", "color", "group")])
       
       map$addPolygon(comp_data$lat, comp_data$long, 
                      fips_colors$group,

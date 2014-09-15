@@ -45,3 +45,6 @@ unique_pops2$age_group <- unlist(age_key[as.character(unique_pops2$age_group)])
 population_age <- ddply(unique_pops2, c("fips", "age_group"), summarize, 
                         population = sum(population), percent = sum(percent))
 
+population_age <- tbl_df(population_age)
+
+save(population_age, file="../../data/population_age.RData", compress='xz')

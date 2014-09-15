@@ -42,4 +42,6 @@ names(quick_facts) <- c("fips", "population_2013", "population_2010_base",
                      "retail_sales", "retail_sales_per_capita", "accom_food_sales", 
                      "building_permits", "land_area", "population_sq_mi")
 
+quick_facts <- tbl_df(quick_facts)
 
+save(quick_facts, file="../../data/quick_facts.RData", compress='xz')

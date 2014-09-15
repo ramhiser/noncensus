@@ -14,12 +14,11 @@ bindEvent <- function(eventExpr, callback, env=parent.frame(), quoted=FALSE) {
 
 shinyServer(function(input, output, session) {
   
-  
   map <- createLeafletMap(session, "map")
   
   output$Legend <- renderUI({
     LL <- vector("list", length(fillColors))        
-    for(i in 1:length(fillColors)){
+    for (i in seq_along(fillColors)) {
       LL[[i]] <- list(tags$div(class = "color-box", 
                                style=paste("background-color:", 
                                            fillColors[i], ";")), 
@@ -48,23 +47,24 @@ shinyServer(function(input, output, session) {
   session$onFlushed(once=TRUE, function() {
     
     companyToUse <- reactive({
-      if (is.null(comp_two$categories)){
+      if (is.null(comp_two$categories)) {
         comp_two
       } else {
         filter(comp_two,
                categories == input$cats | is.na(categories))
-        
       }
     })
-    
-    
+
     paintObs <- observe({
-      
       comp_data <- companyToUse()
-      
+      fips_colors <- comp_data %>% filter(!is.na(comp_data$lat)) %>%
+        dplyr::select(fips, color, group) %>%
+        unique %>%
+        arrange(group)
+
       map$clearShapes()
-      fips_colors <- unique(comp_data[!is.na(comp_data$lat),c("fips", "color", "group")])
-      
+      map$clearPopups()
+
       map$addPolygon(comp_data$lat, comp_data$long, 
                      fips_colors$group,
                      lapply(fips_colors$color, function(x) {
@@ -77,7 +77,6 @@ shinyServer(function(input, output, session) {
     
     session$onSessionEnded(paintObs$suspend)
     
-    
     clickObs <- observe({
       event <- input$map_shape_click
       if (is.null(event))
@@ -86,14 +85,14 @@ shinyServer(function(input, output, session) {
       
       isolate({
         cdata <- companyToUse()
-        county <- cdata[cdata$group == event$id,]
-        if(grain == "county"){
+        county <- cdata[cdata$group == event$id, ]
+        if (grain == "county") {
           center <- county %>% 
             group_by("fips", "names", "county", "fill") %>% filter(!is.na(lat)) %>% 
             summarize(clong = mean(long), clat = mean(lat)) 
           names(center)[3] <- "grain"
           
-        }else if(grain == "state"){
+        } else if (grain == "state") {
           center <- county %>% 
             group_by("fips", "state", "fill") %>% filter(!is.na(lat)) %>% 
             summarize(clong = mean(long), clat = mean(lat)) 

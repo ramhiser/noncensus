@@ -72,4 +72,6 @@ zip_codes$state <- factor(zip_codes$state)
 
 rownames(zip_codes) <- NULL
 
+zip_codes <- tbl_df(zip_codes)
+
 save(zip_codes, file="../../data/zip_codes.RData", compress='xz')

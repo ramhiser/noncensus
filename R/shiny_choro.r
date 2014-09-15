@@ -1,22 +1,25 @@
 #' Start a Shiny Application for Choropleths
 #'
 #' This function takes a dataframe and generates a local Shiny application for 
-#' visualizing the results in a choropleth. The Shiny, dplyr, and leaflet 
-#' libraries must be installed.
+#' visualizing the results in a choropleth.
+#'
+#' NOTE: The \code{leaflet} R package must be installed.
 #'
 #' @export
+#' @importFrom shiny runApp
+#' @importFrom dplyr mutate
 #' @importFrom RColorBrewer brewer.pal
 #' @param df The dataframe with column "fips" (the FIPS 
-#' code of the map to show), with a column for the data to show, 
+#' code of the areas to show), with a column for the data to show, 
 #' and a column for the grouping variable (if specifing categories)
 #' @param fill The name of the variable to show in the choropleth
-#' @param categories The name of the (optional) grouping variable on which to 
+#' @param categories The name of the (optional) grouping variable on which to
 #' divide the data
-#' @param map The level at which to draw the map. Options are "county", "state", 
-#' "world"
-#' @param palette An RColorBrewer palette to use. Default is "Blues"
-#' @param background One of "Base", "Greyscale", "Physical", or "None", to have
-#' as the background tiles for the map
+#' @param map The level at which to draw the map. Options are \code{county},
+#' \code{state}, and \code{world}
+#' @param palette An RColorBrewer palette to use. Default is \code{Blues}
+#' @param background One of \code{Base}, \code{Greyscale}, \code{Physical}, or
+#' \code{None}, to have as the background tiles for the map
 #' @param cuts An optional vector specifying where to make the color breaks. 
 #' Default cuts are the 20th, 40th, 60th, and 80th percentiles
 #' @param dir The directory in which to create the Shiny app. Defaults to
@@ -33,25 +36,17 @@ shiny_choro <- function(df, fill, categories = NULL,
                         background = c("Base", "Greyscale", "Physical", "None"), 
                         cuts = NULL, dir = NULL) {
   
-  if (!require(shiny)) {
-    stop("You must have 'shiny' installed to run the Shiny application 
-         -- try: install.packages('shiny').",
-         call. = F)
-  }
-  if (!require(dplyr)) {
-    stop("You must have 'dplyr' installed to run the Shiny application 
-         -- try: install.packages('dplyr').",
-         call. = F)
-  }
   if (!require(leaflet)) {
     stop("You must have 'leaflet' installed to run the Shiny application 
          -- try: install_github('jcheng5/leaflet-shiny').",
          call. = F)
   }
   
+  df <- dplyr::tbl_df(df)
+  
   if (is.null(dir)) {
-    dir <- file.path(tempdir(), "shinyChoro")
-    on.exit(unlink(dir, recursive = T))
+    dir <- file.path(tempdir(), "shiny_choro")
+    on.exit(unlink(dir, recursive=TRUE))
   }
   dir <- path.expand(dir)
   
@@ -80,10 +75,9 @@ shiny_choro <- function(df, fill, categories = NULL,
     df$categories <- factor(df$categories)
   }
   
-  if (length(map) > 1) map <- map[1]
   map <- match.arg(map)
-  if (length(background) > 1) background <- background[1]
   background <- match.arg(background)
+  
   tiles <- c("Base" = "http://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png",
              "Greyscale" = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
              "Physical" = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}")
@@ -93,27 +87,28 @@ shiny_choro <- function(df, fill, categories = NULL,
   tile <- ifelse(background == "None", NA, tiles[background])
   attribute <- ifelse(background == "None", NA, attributes[background])
   
-  dir.create(dir, showWarnings = F, recursive = T)
+  dir.create(dir, showWarnings=FALSE, recursive=TRUE)
+  dir.create(file.path(dir, 'data'), showWarnings=FALSE, recursive=TRUE)
   
   file.copy(file.path(system.file(package = "noncensus"), "shiny/."), 
-            file.path(dir), recursive = T)
+            file.path(dir), recursive=TRUE)
   
   if (is.null(cuts)) {
     if (is.numeric(df$fill)) {
-      cuts <- unique(quantile(df$fill, seq(0, 1, 1/5)))
+      cuts <- unique(quantile(df$fill, seq(0, 1, 1/5), na.rm = TRUE))
     } else {
       cuts <- levels(factor(df$fill))
     }
   }
   
-  fillColors <- unlist(brewer.pal(length(cuts) - 1, palette))
-  df <- mutate(df, fillKey = cut_nice(df$fill, cuts, ordered_result = T))
+  fill_colors <- unlist(brewer.pal(length(cuts) - 1, palette))
+  df <- dplyr::mutate(df, fillKey = cut_nice(df$fill, cuts, ordered_result=TRUE))
   df$colorBuckets <- as.numeric(df$fillKey)
   leg_txt <- levels(df$fillKey)
-  df$color <- fillColors[df$colorBuckets]
+  df$color <- fill_colors[df$colorBuckets]
   
   # TODO: Could add cat/legend labels or loquesea here later too
-  extras <- list("bg_tile" = tile, "bg_attr" = attribute, "colors" = fillColors,
+  extras <- list("bg_tile" = tile, "bg_attr" = attribute, "colors" = fill_colors,
                  "legend" = leg_txt, "old" = old_names, "map" = map)
   
   # Copies data to temp files to be loaded by Shiny app
@@ -123,9 +118,8 @@ shiny_choro <- function(df, fill, categories = NULL,
   message("The files necessary for launching the Shiny application have ",
           "been copied to '", dir, "'.")
   
-  runApp(file.path(dir))
+  shiny::runApp(file.path(dir))
 }
-
 
 
 #' Plot a Choropleth
@@ -148,7 +142,7 @@ shiny_choro <- function(df, fill, categories = NULL,
 #' data(population_age, package = "noncensus")
 #' df <- plyr::ddply(population_age, "fips", summarize, population = sum(population))
 #' plot_choro(df, fill = "population", map = "county", palette = "Purples", 
-#' continental = T)
+#' continental = TRUE)
 #' 
 plot_choro <- function(df, fill, map = c("county", "state", "world"), 
                        palette = "Blues", 
@@ -160,7 +154,7 @@ plot_choro <- function(df, fill, map = c("county", "state", "world"),
   if (length(map) > 1) map <- map[1]
   map <- match.arg(map)
   
-  if(map == "county"){
+  if (map == "county") {
     data(county_polygons)
     df_poly <- left_join(county_polygons, df, by = "fips")
   } else if (map == "state"){
@@ -173,40 +167,39 @@ plot_choro <- function(df, fill, map = c("county", "state", "world"),
   df_poly <- arrange(df_poly, order)
   
   if (is.null(cuts)){
-    if (is.numeric(df_poly[,fill])) {
-      cuts <- unique(quantile(df_poly[,fill], seq(0, 1, 1/5), na.rm = T))
+    if (is.numeric(df[,fill])) {
+      cuts <- unique(quantile(df[,fill], seq(0, 1, 1/5), na.rm = TRUE))
     } else {
-      cuts <- levels(factor(df_poly[,fill]))
+      cuts <- levels(factor(df[,fill]))
     }
   }
   
-  fillColors <- unlist(brewer.pal(length(cuts) - 1, palette))
+  fill_colors <- unlist(brewer.pal(length(cuts) - 1, palette))
   df_poly <- mutate(df_poly, fillKey = cut_nice(df_poly[,fill], cuts, 
-                                                ordered_result = T))
+                                                ordered_result = TRUE))
   df_poly$colorBuckets <- as.numeric(df_poly$fillKey)
   leg_txt <- levels(df_poly$fillKey)
-  df_poly$color <- fillColors[df_poly$colorBuckets]
+  df_poly$color <- fill_colors[df_poly$colorBuckets]
   
-  fips_colors <- unique(df_poly[!is.na(df_poly$color),c("fips", "color", "group")])
-  fips_colors <- merge(data.frame("group" = unique(na.omit(df_poly$group))), 
-                       fips_colors, by = "group", all.x = T)
+  fips_colors <- unique(df_poly[!is.na(df_poly$lat),c("fips", "color", "group")])
+  
   if (map == "world"){
     plot(c(-180,180), c(-80,80), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
     polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
     legend("bottomleft", legend = leg_txt, fill = fillColors, cex = 0.6, 
            text.width = 50)
   } else {
-  if (continental){
-    plot(c(-125,-68), c(25,50), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
-    polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
-    legend("bottomright", legend = leg_txt, fill = fillColors, cex = 0.6, 
-           text.width = 5)
-  } else {
-    plot(c(-190,-68), c(17,70), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
-    polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
-    legend("topright", legend = leg_txt, fill = fillColors, cex = 0.6, 
-           text.width = 15)
-  }
+    if (continental){
+      plot(c(-125,-68), c(25,50), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
+      polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
+      legend("bottomright", legend = leg_txt, fill = fillColors, cex = 0.6, 
+             text.width = 5)
+    } else {
+      plot(c(-190,-68), c(17,70), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
+      polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
+      legend("topright", legend = leg_txt, fill = fillColors, cex = 0.6, 
+             text.width = 15)
+    }
   }
 }
 

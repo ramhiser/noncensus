@@ -29,6 +29,6 @@ This function takes a dataframe and generates a choropleth plot
 data(population_age, package = "noncensus")
 df <- plyr::ddply(population_age, "fips", summarize, population = sum(population))
 plot_choro(df, fill = "population", map = "county", palette = "Purples",
-continental = T)
+continental = TRUE)
 }
 

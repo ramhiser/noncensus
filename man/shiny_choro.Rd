@@ -9,7 +9,7 @@ shiny_choro(df, fill, categories = NULL, map = c("county", "state",
 }
 \arguments{
 \item{df}{The dataframe with column "fips" (the FIPS
-code of the map to show), with a column for the data to show,
+code of the areas to show), with a column for the data to show,
 and a column for the grouping variable (if specifing categories)}
 
 \item{fill}{The name of the variable to show in the choropleth}
@@ -17,13 +17,13 @@ and a column for the grouping variable (if specifing categories)}
 \item{categories}{The name of the (optional) grouping variable on which to
 divide the data}
 
-\item{map}{The level at which to draw the map. Options are "county", "state",
-"world"}
+\item{map}{The level at which to draw the map. Options are \code{county},
+\code{state}, and \code{world}}
 
-\item{palette}{An RColorBrewer palette to use. Default is "Blues"}
+\item{palette}{An RColorBrewer palette to use. Default is \code{Blues}}
 
-\item{background}{One of "Base", "Greyscale", "Physical", or "None", to have
-as the background tiles for the map}
+\item{background}{One of \code{Base}, \code{Greyscale}, \code{Physical}, or
+\code{None}, to have as the background tiles for the map}
 
 \item{cuts}{An optional vector specifying where to make the color breaks.
 Default cuts are the 20th, 40th, 60th, and 80th percentiles}
@@ -33,8 +33,10 @@ Default cuts are the 20th, 40th, 60th, and 80th percentiles}
 }
 \description{
 This function takes a dataframe and generates a local Shiny application for
-visualizing the results in a choropleth. The Shiny, dplyr, and leaflet
-libraries must be installed.
+visualizing the results in a choropleth.
+}
+\details{
+NOTE: The \code{leaflet} R package must be installed.
 }
 \examples{
 data(population_age, package = "noncensus")

@@ -96,15 +96,18 @@ shiny_choro <- function(df, fill, categories = NULL,
   if (is.null(cuts)) {
     if (is.numeric(df$fill)) {
       cuts <- unique(quantile(df$fill, seq(0, 1, 1/5), na.rm = TRUE))
+      df <- mutate(df, fillKey = cut_nice(df$fill, cuts, 
+                                                    ordered_result = TRUE))
+      df$colorBuckets <- as.numeric(df$fillKey)
+      leg_txt <- levels(df$fillKey)
     } else {
       cuts <- levels(factor(df$fill))
+      df$colorBuckets <- as.numeric(df$fill)
+      leg_txt <- cuts
     }
   }
   
   fill_colors <- unlist(brewer.pal(length(cuts) - 1, palette))
-  df <- dplyr::mutate(df, fillKey = cut_nice(df$fill, cuts, ordered_result=TRUE))
-  df$colorBuckets <- as.numeric(df$fillKey)
-  leg_txt <- levels(df$fillKey)
   df$color <- fill_colors[df$colorBuckets]
   
   # TODO: Could add cat/legend labels or loquesea here later too
@@ -154,6 +157,23 @@ plot_choro <- function(df, fill, map = c("county", "state", "world"),
   if (length(map) > 1) map <- map[1]
   map <- match.arg(map)
   
+  if (is.null(cuts)){
+    if (is.numeric(df[,fill])) {
+      cuts <- unique(quantile(df[,fill], seq(0, 1, 1/5), na.rm = TRUE))
+      df <- mutate(df, fillKey = cut_nice(df[,fill], cuts, 
+                                                    ordered_result = TRUE))
+      df$colorBuckets <- as.numeric(df$fillKey)
+      leg_txt <- levels(df$fillKey)
+    } else {
+      cuts <- levels(factor(df[,fill]))
+      df$colorBuckets <- as.numeric(df[,fill])
+      leg_txt <- cuts
+    }
+  }
+  
+  fill_colors <- unlist(brewer.pal(length(cuts) - 1, palette))
+  df$color <- fill_colors[df$colorBuckets]
+  
   if (map == "county") {
     data(county_polygons)
     df_poly <- left_join(county_polygons, df, by = "fips")
@@ -162,42 +182,34 @@ plot_choro <- function(df, fill, map = c("county", "state", "world"),
     df_poly <- left_join(state_polygons, df, by = "fips")
   } else {
     data(world_polygons)
+    world_polygons <- filter(world_polygons, !is.na(fips))
     df_poly <- left_join(world_polygons, df, by = "fips")
   }
+  
+  df_poly <- tbl_df(df_poly)
   df_poly <- arrange(df_poly, order)
   
-  if (is.null(cuts)){
-    if (is.numeric(df[,fill])) {
-      cuts <- unique(quantile(df[,fill], seq(0, 1, 1/5), na.rm = TRUE))
-    } else {
-      cuts <- levels(factor(df[,fill]))
-    }
-  }
-  
-  fill_colors <- unlist(brewer.pal(length(cuts) - 1, palette))
-  df_poly <- mutate(df_poly, fillKey = cut_nice(df_poly[,fill], cuts, 
-                                                ordered_result = TRUE))
-  df_poly$colorBuckets <- as.numeric(df_poly$fillKey)
-  leg_txt <- levels(df_poly$fillKey)
-  df_poly$color <- fill_colors[df_poly$colorBuckets]
-  
-  fips_colors <- unique(df_poly[!is.na(df_poly$lat),c("fips", "color", "group")])
+  fips_colors <- df_poly %>% filter(!is.na(lat)) %>%
+    dplyr::select(fips, color, group) %>%
+    unique %>%
+    arrange(group)
+
   
   if (map == "world"){
     plot(c(-180,180), c(-80,80), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
     polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
-    legend("bottomleft", legend = leg_txt, fill = fillColors, cex = 0.6, 
+    legend("bottomleft", legend = leg_txt, fill = fill_colors, cex = 0.6, 
            text.width = 50)
   } else {
     if (continental){
       plot(c(-125,-68), c(25,50), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
       polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
-      legend("bottomright", legend = leg_txt, fill = fillColors, cex = 0.6, 
+      legend("bottomright", legend = leg_txt, fill = fill_colors, cex = 0.6, 
              text.width = 5)
     } else {
       plot(c(-190,-68), c(17,70), type = "n", xaxt='n', yaxt = 'n', ann=FALSE)
       polygon(df_poly[,c("long", "lat")], col = fips_colors$color)
-      legend("topright", legend = leg_txt, fill = fillColors, cex = 0.6, 
+      legend("topright", legend = leg_txt, fill = fill_colors, cex = 0.6, 
              text.width = 15)
     }
   }

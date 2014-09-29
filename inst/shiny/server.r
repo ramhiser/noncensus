@@ -50,8 +50,19 @@ shinyServer(function(input, output, session) {
       if (is.null(comp_two$categories)) {
         comp_two
       } else {
-        filter(comp_two,
-               categories == input$cats | is.na(categories))
+        data_two <- filter(county_data, categories == input$cats | is.na(categories))
+        if (grain == "county"){
+          data(county_polygons)
+          tmp <- dplyr::left_join(county_polygons, data_two, by = "fips")
+        } else if (grain == "state"){
+          data(state_polygons)
+          tmp <- dplyr::left_join(state_polygons, data_two, by = "fips")
+        } else {
+          data(world_polygons)
+          world_polygons <- filter(world_polygons, !is.na(fips))
+          tmp <- dplyr::left_join(world_polygons, data_two, by = "fips")
+        }
+        tmp
       }
     })
 

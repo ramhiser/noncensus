@@ -116,16 +116,19 @@ states <- within(states, {
 # Linked from: http://www.census.gov/popest/data/state/totals/2013/index.html
 census_data <- read.csv("http://www.census.gov/popest/data/national/totals/2013/files/NST_EST2013_ALLDATA.csv",
                         header=T)
+census_data <- tbl_df(census_data)
+census_data$NAME <- as.character(census_data$NAME)
 
-states$population <- as.integer(merge(states,
-                                      census_data,
-                                      by.x="name",
-                                      by.y="NAME")$CENSUS2010POP)
+states <- census_data %>%
+  select(NAME, CENSUS2010POP) %>%
+    inner_join(states, ., by=c("name"="NAME")) %>%
+    mutate(population=as.integer(CENSUS2010POP)) %>%
+    select(-CENSUS2010POP)       
 
 # Reorder columns
 cols_states <- c('state', 'name', 'region', 'division', 'capital', 'area',
                  'population')
-states <- states[cols_states]
+states <- tbl_df(states[cols_states])
 
 # Additional info from:
 # http://en.wikipedia.org/wiki/List_of_capitals_in_the_United_States#Insular_area_capitals
@@ -139,6 +142,8 @@ states <- rbind(states,
 states$state <- factor(states$state)
 states$region <- factor(states$region)
 states$division <- factor(states$division)
+states$area <- as.numeric(states$area)
+states$population <- as.integer(states$population)
 
 states <- tbl_df(states)
 

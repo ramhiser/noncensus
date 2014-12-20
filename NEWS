@@ -1,3 +1,11 @@
+noncensus 0.1.1
+---------------
+
+BUG FIXES
+
+* The populations in the `states` data set were misaligned with the state names.
+  Fixed. Thanks to Dan Irons for finding this. #32
+
 noncensus 0.1
 -------------
 

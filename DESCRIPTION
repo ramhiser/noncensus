@@ -1,7 +1,7 @@
 Package: noncensus
 Title: U.S. Census Regional and Demographic Data
-Version: 0.2
-Date: 2014-09-10
+Version: 0.1.1
+Date: 2014-12-19
 Author: John A. Ramey <johnramey@gmail.com>,
     Kayla Schaefer <kschaefer.tx@gmail.com>
 Maintainer: John A. Ramey <johnramey@gmail.com>

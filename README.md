@@ -85,34 +85,3 @@ head(zip_codes, 10)
 9  03073 North Salem    NH  43.0059  -71.0132 33015
 10 03802  Portsmouth    NH  43.0059  -71.0132 33015
 ```
-
-## Roadmap
-
-### Version 0.2
-
-- More detailed demographic data (discussion below)
-- Similar to the [UScensus2010
-  package](http://cran.r-project.org/web/packages/UScensus2010/index.html) but
-  awesomer
-
-The demographic data included in version 0.1 was limited to aggregate
-information for a given geographic area (i.e., county, state). The U.S. Census
-Bureau breaks this demographic data down into specific groups: 18 different age
-groups, specific ethnicity cohorts, and gender. Furthermore, the Bureau
-provides the actual data from the 2010 census and annual estimates for the
-subsequent years.
-
-The detailed data are provided by the U.S. Census Bureau
-[here](http://www.census.gov/popest/data/index.html). In version 0.2 we should
-include all  of the data and a simple API so that the data are easily
-accessible.
-
-### Version 0.3
-
-- Data exploration and visualization
-- Simple API to correlate city- or county-level spatial data with census data
-- Focus on cholorpleths and standard spatial models
-- Possily work with spatial data frames to utilize existing packages.
-  - Should be simple and easy to use
-  - Minimal boilerplate code for data munging and massaging
-  - Existing work described in the [spatial CRAN Task View](http://cran.r-project.org/web/views/Spatial.html)

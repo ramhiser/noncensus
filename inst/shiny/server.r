@@ -36,9 +36,9 @@ shinyServer(function(input, output, session) {
                          draggable = TRUE, top = 20, left = "auto", right = 20, 
                          bottom = "auto", width = 200, height = "auto",
                          h4("Category select"),
-           selectInput(inputId="cats",
-                       label="Category to show",
-                       choices=county_cats)))
+                         selectInput(inputId="cats",
+                                     label="Category to show",
+                                     choices=county_cats)))
   })
   
   
@@ -50,14 +50,25 @@ shinyServer(function(input, output, session) {
       if (is.null(comp_two$categories)) {
         comp_two
       } else {
-        filter(comp_two,
-               categories == input$cats | is.na(categories))
+        data_two <- filter(county_data, categories == input$cats | is.na(categories))
+        if (grain == "county"){
+          data(county_polygons)
+          tmp <- dplyr::left_join(county_polygons, data_two, by = "fips")
+        } else if (grain == "state"){
+          data(state_polygons)
+          tmp <- dplyr::left_join(state_polygons, data_two, by = "fips")
+        } else {
+          data(world_polygons)
+          world_polygons <- filter(world_polygons, !is.na(fips))
+          tmp <- dplyr::left_join(world_polygons, data_two, by = "fips")
+        }
+        tmp
       }
     })
 
     paintObs <- observe({
       comp_data <- companyToUse()
-      fips_colors <- comp_data %>%
+      fips_colors <- comp_data %>% filter(!is.na(comp_data$lat)) %>%
         dplyr::select(fips, color, group) %>%
         unique %>%
         arrange(group)
@@ -97,8 +108,12 @@ shinyServer(function(input, output, session) {
             group_by("fips", "state", "fill") %>% filter(!is.na(lat)) %>% 
             summarize(clong = mean(long), clat = mean(lat)) 
           names(center)[2] <- "grain"
+        } else {
+          center <- county %>% 
+            group_by("fips", "name", "fill") %>% filter(!is.na(lat)) %>% 
+            summarize(clong = mean(long), clat = mean(lat)) 
+          names(center)[2] <- "grain"
         }
-        #TODO: World polygons
         content <- as.character(tagList(
           tags$strong(center$grain),
           tags$br(),

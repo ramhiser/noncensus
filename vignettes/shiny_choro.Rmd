@@ -1,0 +1,123 @@
+plot\_choro and shiny\_choro
+----
+The `plot_choro` and `shiny_choro` functions of `noncensus` provide an easy and
+intuitive way to make basic choropleths and interactive choropleth shiny applications.
+
+### Advantages
+
+shiny_choro draws inspiration from the existing [rMaps](https://github.com/ramnathv/rMaps)
+function ichoropleth by ramnathv while taking advantage of the existing Shiny 
+leaflet bindings by [jcheng5](https://github.com/jcheng5/leaflet-shiny). noncensus' 
+version is more flexible than ichoropleth, allowing a choice in map selection and 
+choropleth color breaks.
+At the same time, the average user does not need to have full knowledge of the
+Shiny leaflet structure, and can easily get a functioning, interactive session
+with just a one-line call. 
+
+### An Example
+The New York Times puts out nice interactives. One of the recent ones is shown 
+[here](http://www.nytimes.com/2014/08/20/upshot/data-on-transfer-of-military-gear-to-police-departments.html?_r=0&abt=0002&abg=0). shiny_choro makes it easy to replicate this example, just using
+R. 
+
+We start with getting the raw data, conveniently provided on the NYT's github page
+``` {r get_data, eval = FALSE}
+library(dplyr)
+library(stringr)
+library(noncensus)
+
+temp <- tempfile()
+download.file(paste0("https://raw.githubusercontent.com/TheUpshot/Military-Surplus-Gear/",
+                     "master/1033-program-foia-may-2014.csv"), 
+              temp, method = "curl")
+military <- tbl_df(read.csv(temp))
+```
+
+Now, the data are a bit messy, and we will need to supply the category labels ourselves.
+There's a lot entries to go through, and since there is no consistent naming scheme, 
+we'll do a quick and dirty assignment just on a few keywords. 
+
+* Aircraft: "plane", "heli"
+* Armoured vehicles: "atv", "vehicle" "truck"
+* Body Armour: "armor", "armour", "helmet", "vest"
+* Grenade Launchers: "launcher"
+* Night vision: "night", "vision", "binocular", "sight", "goggle"  
+* Assault rifle: "rifle"
+
+``` {r add_labels, eval = FALSE}
+military$category <- NA
+military <- mutate(military, County = tolower(County), Item.Name = tolower(Item.Name))
+
+gear_sort <- function(x){
+  if(str_detect(x, "rifle")){
+    return("Assault Rifles")
+  } else if(str_detect(x, "night")| str_detect(x, "vision") | 
+              str_detect(x, "binocular") | str_detect(x, "sight") | 
+              str_detect(x, "goggle")){
+    return("Night Vision")
+  } else if(str_detect(x, "atv") | str_detect(x, "vehicle") | 
+              str_detect(x, "truck")){
+    return("Armoured Vehicles")
+  } else if(str_detect(x, "plane") | str_detect(x, "heli")){
+    return("Aircraft")
+  } else if(str_detect(x, "launcher")){
+    return("Grenade Launchers")
+  } else if(str_detect(x, "armo[u]?r")| str_detect(x, "helmet") | 
+              str_detect(x, "vest")){
+    return("Body Armour")
+  } else {
+    return(NA)
+  }
+}
+
+military$category <- sapply(military$Item.Name, gear_sort)
+```
+
+As of version 0.4, we need the FIPS code for each county in order to plot the data.
+This can be achieved with two joins, one to get the full state name from its 
+abbreviation, and one to add the FIPS code based on the full county name (given as
+'state,county'). The two joining datasets are also from `noncensus`.
+
+```{r add_fips, eval = FALSE}
+data(states)
+names(states)[1] <- "State"
+military2 <- left_join(military, select(states, State, name), by = "State") %>% 
+  select(-NSN)
+military2$name <- tolower(military2$name)
+military2$names <- apply(military2 %>% select(name, County), 1, paste, 
+                         collapse = ",")
+
+data(county_polygons)
+military3 <- inner_join(military2, county_polygons %>% select(fips, names), 
+                        by = "names")
+military3 <- select(military3, Quantity, category, fips) %>% 
+  filter(!is.na(category))
+```
+
+Now all that's left to do is aggregate all the entries into totals and call `shiny_choro`.
+
+```{r shiny_call, eval = FALSE}
+military3 <- military3 %>% group_by(fips, category) %>% 
+  summarize(Quantity = sum(Quantity, na.rm = T))
+
+shiny_choro(military3, fill = "Quantity", categories = "category", map = "county", 
+            palette = "YlOrRd", background = "Grey")
+```
+
+### plot_choro
+If we just want a static image for a composite or subset of the data, we can use
+`plot_choro`, which works much in the same way as shiny_choro. For example, if we
+want to look at just the overall quantity of items received (like the starting image
+on the NYT page), we summarize, and call `plot_choro`.
+
+```{r plot_call, eval = FALSE}
+military4 <- military3 %>% summarize(Quantity = sum(Quantity, na.rm = T))
+
+# show overall totals
+plot_choro(military4, fill = "Quantity", map = "county", palette = "YlOrRd",
+            background = "Grey")
+
+# show just rifles
+plot_choro(filter(military3, category == "Assault Rifles", fill = "Quantity", 
+                  map = "county", palette = "YlOrRd", background = "Grey")
+```
+

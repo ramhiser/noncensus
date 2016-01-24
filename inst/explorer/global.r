@@ -9,7 +9,7 @@ data(quick_facts)
 
 
 data(county_polygons)
-comp_two <- merge(county_polygons, quick_facts, by = "fips", all.x = T)
+comp_two <- left_join(county_polygons, quick_facts, by = "fips")
 comp_two <- comp_two %>% arrange(group, order)
 
 full_names <- c(
@@ -103,7 +103,7 @@ level3_names <- list("Population estimates" =
                          "Population, 2010 (April 1) estimates base", 
                          "Population, 2013 estimate"), 
                      "Age" = c("Percentage of persons under 5 years",
-                               "Percentge of  persons under 18 years",
+                               "Percentage of  persons under 18 years",
                                "Percentage of persons 65 years and over"), 
                      "Gender" = c("Percentage of Female persons", 
                                   "Percentage of Male persons"), 

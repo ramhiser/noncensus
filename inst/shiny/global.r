@@ -21,20 +21,28 @@ if (is.na(tile)) {
 }
 
 attr <- extra_data$bg_attr
-if (is.na(attr)) {
+if (is.na(attr)){ 
   attr <- NULL
 }
 
-if (grain == "county") {
-  data(county_polygons, package="noncensus")
-  comp_two <- dplyr::left_join(county_polygons, county_data, by = "fips")
-} else if (grain == "state") {
-  data(state_polygons, package="noncensus")
-  comp_two <- dplyr::left_join(state_polygons, county_data, by = "fips")
+if (grain == "world"){
+  opts <- list(center = c(0, 0), zoom = 2)
 } else {
-  stop("World polygons not yet implemented")
-  data(world_polygons, package="noncensus")
-  comp_two <- dplyr::left_join(world_polygons, county_data, by = "fips")
+  opts <- list(center = c(37.45, -93.85), zoom = 4)
+}
+
+if(!is.null(county_data$categories)){
+  if (grain == "county"){
+    data(county_polygons)
+    comp_two <- dplyr::left_join(county_polygons, county_data, by = "fips")
+  } else if (grain == "state"){
+    data(state_polygons)
+    comp_two <- dplyr::left_join(state_polygons, county_data, by = "fips")
+  } else {
+    data(world_polygons)
+    world_polygons <- filter(world_polygons, !is.na(fips))
+    comp_two <- dplyr::left_join(world_polygons, county_data, by = "fips")
+  }
 }
 
 comp_two <- dplyr::tbl_df(comp_two)

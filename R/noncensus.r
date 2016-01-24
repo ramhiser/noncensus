@@ -293,3 +293,71 @@ NULL
 #' @usage data(county_polygons)
 #' @format A data frame with 91,030 rows and 7 variables
 NULL
+
+
+#' Polygons to Describe Each U.S. State's Geographical Shape
+#'
+#' Data containing the vertices to describe each U.S. state's geographical
+#' shape as a polygon. Vertices are given in terms of latitude and
+#' longitude. The order in which the vertices should be drawn are also given by
+#' \code{order}.
+#'
+#' NOTE: A small number of states have multiple groups. Typically, these
+#' counties are separated into multiple polygons by, say, a body of water.
+#' Example: Texas (FIPS == 48).
+#'
+#' U.S. states are uniquely identified by a FIPS code.
+#'
+#' The \code{state_polygons} data frame consists of the following variables:
+#' \itemize{
+#'   \item order. The order in which the vertices should be drawn.
+#'   \item long. States's longitude
+#'   \item lat. States's latitude
+#'   \item group. State polygon's group number.
+#'   \item state. The states's name.
+#'   \item fips. State FIPS Code
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name state_polygons
+#' @usage data(state_polygons)
+#' @format A data frame with 26,819 rows and 6 variables
+NULL
+
+
+#' Polygons to Describe Each Country's Geographical Shape
+#'
+#' Data containing the vertices to describe each country's geographical
+#' shape as a polygon. Vertices are given in terms of latitude and
+#' longitude. The order in which the vertices should be drawn are also given by
+#' \code{order}.
+#'
+#' NOTE: Many countries have multiple groups. Typically, these
+#' countries are separated into multiple polygons by, say, a body of water.
+#' Example: United States (FIPS == US, UN code == 840).
+#'
+#' Countries are uniquely identified in many ways: by a FIPS code, ISO2, IS03, 
+#' and by the UN code.
+#'
+#' The \code{world_polygons} data frame consists of the following variables:
+#' \itemize{
+#'   \item order. The order in which the vertices should be drawn
+#'   \item long. Country's longitude
+#'   \item lat. Country's latitude
+#'   \item group. Country polygon's group number
+#'   \item name. Unique name to describe country
+#'   \item fips. Country FIPS Code
+#'   \item ISO2. Country ISO2 Code
+#'   \item ISO3. Country ISO3 Code
+#'   \item region. Country region (continent)
+#'   \item subregion. Country subregion
+#'   \item UN_code. Country UN Code
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name world_polygons
+#' @usage data(world_polygons)
+#' @format A data frame with 406,940 rows and 11 variables
+NULL
